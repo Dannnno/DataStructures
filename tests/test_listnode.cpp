@@ -1,6 +1,10 @@
+#include <sstream>
+#include <string>
+
 #include "gtest/gtest.h"
 
 #include "../linkedlist/listnode.hpp"
+
 
 TEST(ListNodeTest, getValue) {
 	EXPECT_EQ(1, ListNode<int>(1).getValue());
@@ -43,4 +47,12 @@ TEST(ListNodeTest, setNext) {
 	delete node1;
 	delete node2;
 	delete node3;
+}
+
+TEST(ListNodeTest, stream) {
+	ListNode<int> node1(1);
+	std::ostringstream stream;
+	stream << node1;
+	std::string str = stream.str();
+	EXPECT_EQ("1", str);
 }

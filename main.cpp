@@ -13,10 +13,10 @@ int main()
 	cout << testNode1 << endl;
 
 	LinkedList<int> testList;
-	testList.appendRight(1);
-	testList.appendRight(2);
-	testList.appendRight(3);
-	testList.appendRight(4);
+	testList.append(1);
+	testList.append(2);
+	testList.append(3);
+	testList.append(4);
 	cout << testList << endl;
 
 	exit(0);

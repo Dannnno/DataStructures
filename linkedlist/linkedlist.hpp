@@ -60,7 +60,7 @@ public:
 	 * \post All nodes have the appropriate "next_" and the list has
 	 *		 the appropriate size.
 	 */
-	void appendRight(T value);
+	void append(T value);
 
 	/**
 	 * \brief Overloads the mutable subscript operator.
@@ -115,14 +115,16 @@ template <typename T> inline T LinkedList<T>::getTail() const
 }
 
 template <typename T> inline 
-void LinkedList<T>::appendRight(T node)
+void LinkedList<T>::append(T node)
 {
 	ListNode<T>* newNode = new ListNode<T>(node);
-	if (head_ == nullptr) {
+	if (numElements_ == 0) {
 		head_ = newNode;
 		tail_ = head_;
-	}
-	else {
+	} else if (numElements_ == 1) {
+		head_->setNext(newNode);
+		tail_ = newNode;
+	} else {
 		ListNode<T>* last = tail_;
 		last->setNext(newNode);
 		tail_ = newNode;
@@ -142,7 +144,9 @@ T& LinkedList<T>::operator[](size_t index)
 		current = next;
 	}
 
-	return current->getValue();
+	T retValue = current->getValue();
+	T& retRef = retValue;
+	return retRef;
 }
 
 template <typename T> inline 
@@ -156,8 +160,9 @@ const T& LinkedList<T>::operator[](size_t index) const
 		current = next;
 	}
 
-	const T& value = current->getValue();
-	return value;
+	const T value = current->getValue();
+	const T& valRef = value;
+	return valRef;
 }
 
 template <typename T> inline std::size_t LinkedList<T>::size() const
