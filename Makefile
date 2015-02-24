@@ -32,3 +32,4 @@ clean:
 
 commit:
 	git commit -a -m "$m"
+	git push origin master
