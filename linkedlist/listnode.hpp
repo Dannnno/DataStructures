@@ -52,7 +52,7 @@ public:
 	/**
 	 * \brief Provides a const reference tot he value.
 	 */
-	T& getCValue() const;
+	const T& getCValue() const;
 
 	/**
 	 * \brief Returns a pointer to the next node.
@@ -85,7 +85,7 @@ template <typename T> inline T& ListNode<T>::getValue()
 	return value_;
 }
 
-template <typename T> inline T& ListNode<T>::getCValue() const
+template <typename T> inline const T& ListNode<T>::getCValue() const
 {
 	return value_;
 }
