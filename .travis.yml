@@ -1,0 +1,17 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+before_install:
+ - sudo apt-get update
+ - sudo apt-get install libgtest-dev
+ - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+script:
+ - make all_tests
+ - ./all_tests 
+notifications:
+  recipients:
+    - dannnno16@gmail.com
+  email:
+    on_success: change
+    on_failure: always
