@@ -46,9 +46,8 @@ public:
 
 	/**
 	 * \brief Returns the value within the node.
-	 * \post The node is unchanged.
 	 */
-	 T& getValue() const;
+	 T& getValue();
 
 	/**
 	 * \brief Returns a pointer to the next node.
@@ -76,7 +75,7 @@ ListNode<T>::ListNode(T value, ListNode<T>* node) :
 	value_(value), next_(node) {
 }
 
-template <typename T> inline T& ListNode<T>::getValue() const
+template <typename T> inline T& ListNode<T>::getValue()
 {
 	return value_;
 }
