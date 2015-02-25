@@ -12,12 +12,15 @@ int main()
 	ListNode<int> testNode1(1);
 	cout << testNode1 << endl;
 
-	LinkedList<int> testList;
-	testList.append(1);
-	testList.append(2);
-	testList.append(3);
-	testList.append(4);
+	int initarr[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> testList(initarr, 5);
+	LinkedList<int> testList2;
+	testList2.append(1);
+	testList2.append(2);
+	testList2.append(3);
+	testList2.append(4);
 	cout << testList << endl;
+	cout << testList2 << endl;
 
 	exit(0);
 }

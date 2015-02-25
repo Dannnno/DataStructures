@@ -41,6 +41,11 @@ public:
 	LinkedList();
 
 	/**
+	 * \brief A constructor from an array.
+	 */
+	LinkedList(T* arr, std::size_t length);
+
+	/**
 	 * \brief The destructor for a linked list.
 	 */
 	~LinkedList();
@@ -91,6 +96,20 @@ private:
 
 template <typename T> inline LinkedList<T>::LinkedList() :
 	numElements_(0), head_(nullptr), tail_(nullptr) {
+}
+
+template <typename T> inline LinkedList<T>::LinkedList(
+	T* arr, std::size_t length) : 
+		numElements_(length), head_(nullptr), tail_(nullptr) {
+	ListNode<T>* h = new ListNode<T>(arr[0]);
+	head_ = h;
+	ListNode<T>* current = head_;
+	for (std::size_t i = 1; i < length; ++i) {
+		ListNode<T>* next = new ListNode<T>(arr[i]);
+		current->setNext(next);
+		current = next;
+	}
+	tail_ = current;
 }
 
 template <typename T> inline LinkedList<T>::~LinkedList()
