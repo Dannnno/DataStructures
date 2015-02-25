@@ -12,6 +12,9 @@
 #include <string>
 #include <iostream>
 
+/**
+ * \brief A node in a singly linked list.
+ */
 template <typename T>
 class ListNode;
 
@@ -23,9 +26,6 @@ template <typename T> std::ostream& operator<<(
 	std::ostream& str, const ListNode<T>& node);
 
 template <typename T>
-/**
- * \brief A node in a singly linked list.
- */
 class ListNode
 {
 public:
@@ -48,6 +48,11 @@ public:
 	 * \brief Returns the value within the node.
 	 */
 	 T& getValue();
+
+	/**
+	 * \brief Provides a const reference tot he value.
+	 */
+	T& getCValue() const;
 
 	/**
 	 * \brief Returns a pointer to the next node.
@@ -80,6 +85,11 @@ template <typename T> inline T& ListNode<T>::getValue()
 	return value_;
 }
 
+template <typename T> inline T& ListNode<T>::getCValue() const
+{
+	return value_;
+}
+
 template <typename T> inline ListNode<T>* ListNode<T>::getNext() const
 {
 	return next_;
@@ -91,14 +101,10 @@ void ListNode<T>::setNext(ListNode<T>* node)
 	next_ = node;
 }
 
-/**
- * \brief Overloads the << operator to allow writing a node's contents
- *  to a string or stream.
- **/
 template <typename T> inline std::ostream& operator<<(
 	std::ostream& str, const ListNode<T>& node)
 {
-	str << node.getValue();
+	str << node.getCValue();
 	return str;
 }
 
