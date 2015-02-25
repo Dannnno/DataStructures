@@ -68,6 +68,7 @@ TEST(LinkedListTest, stringLengthOne) {
 	std::string str = stream.str();
 
 	EXPECT_EQ("{1}\n", str);
+	EXPECT_EQ(str.length(), 4);
 }
 
 TEST(LinkedListTest, stringLengthTwo) {
@@ -80,5 +81,74 @@ TEST(LinkedListTest, stringLengthTwo) {
 	std::string str = stream.str();
 
 	EXPECT_EQ("{1, 2}\n", str);
+	EXPECT_EQ(str.length(), 7);
+}
 
+TEST(LinkedListTest, popDefaultEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_THROW(list.pop(), std::string);
+}
+
+TEST(LinkedListTest, popSpecificEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_THROW(list.pop(1), std::string);
+}
+
+TEST(LinkedListTest, popDefaultNonEmptyList) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+
+	EXPECT_EQ(1, list.pop());
+	EXPECT_EQ(4, list.size());
+}
+
+TEST(LinkedListTest, popSpecificNonEmptyList) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+
+	EXPECT_EQ(3, list.pop(2));
+	EXPECT_EQ(4, list.size());
+}
+
+TEST(LinkedListTest, popOutOfRange) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+
+	EXPECT_THROW(list.pop(5), std::string);
+}
+
+TEST(LinkedListTest, removeDefaultEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_THROW(list.remove(), std::string);
+}
+
+TEST(LinkedListTest, removeSpecificEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_THROW(list.remove(1), std::string);
+}
+
+TEST(LinkedListTest, removeDefaultNonEmptyList) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	list.remove();
+	EXPECT_EQ(4, list.size());
+}
+
+TEST(LinkedListTest, removeSpecificNonEmptyList) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	list.remove(2);
+	EXPECT_EQ(4, list.size());
+	EXPECT_EQ(4, list[2]);
+}
+
+TEST(LinkedListTest, removeOutOfRange) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+
+	EXPECT_THROW(list.remove(5), std::string);
 }

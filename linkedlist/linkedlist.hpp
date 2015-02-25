@@ -68,14 +68,36 @@ public:
 	void append(T value);
 
 	/**
+	 * \brief Removes the first item in the list.
+	 */
+	void remove();
+
+	/**
+	 * \brief Removes the nth item in the list.
+	 */
+	void remove(std::size_t n);
+
+	/**
+	 * \brief Removes and returns a copy of the value of the first item 
+	 *        in the list.
+	 */
+	T pop();
+
+	/**
+	 * \brief Removes and returns a copy of the value of the nth item 
+	 *		  in the list.
+	 */
+	T pop(std::size_t n);
+
+	/**
 	 * \brief Overloads the mutable subscript operator.
 	 */
-    T& operator[](size_t index);
+    T& operator[](std::size_t index);
 
     /**
      * \brief Overloads the immutable subscript operator.
      */
-  	const T& operator[](size_t index) const;
+  	const T& operator[](std::size_t index) const;
 
   	/**
   	 * \brief Returns the size of the list
@@ -88,14 +110,19 @@ public:
 	bool isEmpty() const;
 
 private:
-	template <typename TYPE>
-	struct Node {
-		TYPE value_;
-		Node<TYPE>* next_;
-	};
 	std::size_t numElements_;
 	ListNode<T>* head_;
 	ListNode<T>* tail_;
+
+	/**
+	 * \brief Gets the *node*, not the *value* at the given index.
+	 */
+	ListNode<T>* get(std::size_t& index);
+
+	/**
+	 * \brief Constant version of get.
+	 */
+	ListNode<T>* cGet(const std::size_t& index) const;
 };
 
 
@@ -158,8 +185,73 @@ void LinkedList<T>::append(T node)
 	++numElements_;
 }
 
-template <typename T> inline 
-T& LinkedList<T>::operator[](size_t index)
+template <typename T> inline
+void LinkedList<T>::remove()
+{
+	if (numElements_ == 0)
+		throw std::string("Can't remove from an empty list");
+	// Setting it up like this eliminates duplicate code.
+	ListNode<T>* newHead = nullptr;
+	if (numElements_ > 1) {
+		newHead = head_->getNext();
+	}
+	delete head_;
+	head_ = newHead;
+	--numElements_;
+}
+
+template <typename T> inline
+void LinkedList<T>::remove(std::size_t n)
+{
+	if (n >= numElements_) 
+		throw std::string("Index out of range");
+
+	std::size_t index = n-1;
+	ListNode<T>* prev = get(index);
+	ListNode<T>* toRemove = prev->getNext();
+	ListNode<T>* after = toRemove->getNext();
+	delete toRemove;
+	prev->setNext(after);
+	--numElements_;
+}
+
+template <typename T> inline
+T LinkedList<T>::pop()
+{
+	// Setting it up like this eliminates duplicate code.
+	ListNode<T>* newHead = nullptr;
+	T value;
+	if (numElements_ > 1) {
+		newHead = head_->getNext();
+		value = head_->getValue();
+	} else if (numElements_ == 0) {
+		throw std::string("Can't pop from an empty list");
+	}
+	delete head_;
+	head_ = newHead;
+	--numElements_;
+	return value;
+}
+
+template <typename T> inline
+T LinkedList<T>::pop(std::size_t n)
+{
+	if (n >= numElements_) 
+		throw std::string("Index out of range");
+
+	std::size_t index = n-1;
+	ListNode<T>* prev = get(index);
+	ListNode<T>* toRemove = prev->getNext();
+	ListNode<T>* after = toRemove->getNext();
+	T value = toRemove->getValue();
+	delete toRemove;
+	prev->setNext(after);
+	--numElements_;	
+	return value;
+}
+
+template <typename T> inline
+ListNode<T>* LinkedList<T>::get(std::size_t& index)
 {
 	ListNode<T>* current = head_;
 	ListNode<T>* next = nullptr;
@@ -169,21 +261,33 @@ T& LinkedList<T>::operator[](size_t index)
 		current = next;
 	}
 
-	return current->getValue();
+	return current;
+}
+
+template <typename T> inline
+ListNode<T>* LinkedList<T>::cGet(const std::size_t& index) const
+{
+	ListNode<T>* current = head_;
+	ListNode<T>* next = nullptr;
+
+	for (size_t i = 0; i < index; ++i) {
+		next = current->getNext();
+		current = next;
+	}
+
+	return current;
+}	
+
+template <typename T> inline 
+T& LinkedList<T>::operator[](std::size_t index)
+{
+	return get(index)->getValue();
 }
 
 template <typename T> inline 
-const T& LinkedList<T>::operator[](size_t index) const
+const T& LinkedList<T>::operator[](std::size_t index) const
 {
-	ListNode<T>* current = head_;
-	ListNode<T>* next = nullptr;
-
-	for (size_t i = 0; i < index; ++i) {
-		next = current->getNext();
-		current = next;
-	}
-
-	return current->getCValue();
+	return cGet(index)->getCValue();
 }
 
 template <typename T> inline std::size_t LinkedList<T>::size() const
