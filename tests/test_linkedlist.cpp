@@ -67,7 +67,7 @@ TEST(LinkedListTest, stringLengthOne) {
 	stream << list;
 	std::string str = stream.str();
 
-	EXPECT_EQ("{1}", str);
+	EXPECT_EQ("{1}\n", str);
 }
 
 TEST(LinkedListTest, stringLengthTwo) {
@@ -79,6 +79,6 @@ TEST(LinkedListTest, stringLengthTwo) {
 	stream << list;
 	std::string str = stream.str();
 
-	EXPECT_EQ("{1, 2}", str);
+	EXPECT_EQ("{1, 2}\n", str);
 
 }

@@ -53,12 +53,12 @@ public:
 	/**
 	 * \brief The head (first item) of the list.
 	 */
-	T getHead() const;
+	T& getHead();
 
 	/**
 	 * \brief The tail (last item) of the list.
 	 */
-	T getTail() const;
+	T& getTail();
 
 	/**
 	 * \brief Adds a node to the end of the list.
@@ -88,6 +88,11 @@ public:
 	bool isEmpty() const;
 
 private:
+	template <typename TYPE>
+	struct Node {
+		TYPE value_;
+		Node<TYPE>* next_;
+	};
 	std::size_t numElements_;
 	ListNode<T>* head_;
 	ListNode<T>* tail_;
@@ -101,11 +106,12 @@ template <typename T> inline LinkedList<T>::LinkedList() :
 template <typename T> inline LinkedList<T>::LinkedList(
 	T* arr, std::size_t length) : 
 		numElements_(length), head_(nullptr), tail_(nullptr) {
-	ListNode<T>* h = new ListNode<T>(arr[0]);
-	head_ = h;
-	ListNode<T>* current = head_;
+	head_ = new ListNode<T>(arr[0]);
+	ListNode<T>* current = nullptr;
+	ListNode<T>* next = nullptr;
+	current = head_;
 	for (std::size_t i = 1; i < length; ++i) {
-		ListNode<T>* next = new ListNode<T>(arr[i]);
+		next = new ListNode<T>(arr[i]);
 		current->setNext(next);
 		current = next;
 	}
@@ -117,18 +123,18 @@ template <typename T> inline LinkedList<T>::~LinkedList()
 	ListNode<T>* current = head_;
 	ListNode<T>* next = nullptr;
 	while (current != nullptr) {
-		next = head_->getNext();
+		next = current->getNext();
 		delete current;
 		current = next;
 	}
 }
 
-template <typename T> inline T LinkedList<T>::getHead() const
+template <typename T> inline T& LinkedList<T>::getHead()
 {
 	return head_->getValue();
 }
 
-template <typename T> inline T LinkedList<T>::getTail() const
+template <typename T> inline T& LinkedList<T>::getTail()
 {
 	return tail_->getValue();
 }
@@ -163,9 +169,7 @@ T& LinkedList<T>::operator[](size_t index)
 		current = next;
 	}
 
-	T retValue = current->getValue();
-	T& retRef = retValue;
-	return retRef;
+	return current->getValue();
 }
 
 template <typename T> inline 
@@ -179,9 +183,7 @@ const T& LinkedList<T>::operator[](size_t index) const
 		current = next;
 	}
 
-	const T value = current->getValue();
-	const T& valRef = value;
-	return valRef;
+	return current->getCValue();
 }
 
 template <typename T> inline std::size_t LinkedList<T>::size() const
@@ -198,10 +200,12 @@ template <typename T> inline
 std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list)
 {
 	str << "{";
-	for (size_t i = 0; i < list.size()-1; ++i) {
-		str << list[i] << ", ";
+	for (size_t i = 0; i < list.size(); ++i) {
+		str << list[i];
+		if (i != list.size()-1) 
+			str << ", ";
 	}
-	str << list.getTail() << "}";
+	str << "}" << std::endl;
 	return str;
 }
 

@@ -1,7 +1,17 @@
-ifdef CXX
-    $(info Compiler is [${CXX}])
-else
+# This is because travis sets this as an environment variable, but my
+# machine doesn't
+ifndef CXX
     CXX := g++
+endif
+
+LINKERS = -lgtest
+
+# Adapted from http://stackoverflow.com/a/12099167/3076272
+ifneq ($(OS),Windows_NT)
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        LINKERS += -lpthread
+    endif
 endif
 
 CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
@@ -15,7 +25,7 @@ linkedlist: main.o
 	$(CXX) -o linkedlist main.o
 
 all_tests: $(TEST_DEPENDENCIES) runtests.o
-	$(CXX) -o all_tests $(TEST_DEPENDENCIES) runtests.o -lgtest
+	$(CXX) -o all_tests $(TEST_DEPENDENCIES) runtests.o $(LINKERS)
 
 runtests.o: runtests.cpp
 	$(CXX) $(CXXFLAGS) -c runtests.cpp
@@ -33,7 +43,8 @@ tests.o: tests.cpp
 	$(CXX) $(CXXFLAGS) -c tests.cpp
 
 clean:
-	rm -f *.o *.exe *.out linkedlist tests
+	rm -f *.o *.exe linkedlist all_tests
+	rm -f tests/*.o
 
 commit:
 	git commit -a -m "$m"
