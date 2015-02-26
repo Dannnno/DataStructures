@@ -12,6 +12,9 @@ ifneq ($(OS),Windows_NT)
     ifeq ($(UNAME_S),Linux)
         LINKERS += -lpthread
     endif
+    REMOVE := rm -f
+else
+    REMOVE := del
 endif
 
 CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
@@ -21,11 +24,18 @@ TEST_OBJ = $(TESTS:.cpp=.o)
 
 TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), listnode linkedlist) 
 
-linkedlist: main.o
-	$(CXX) -o linkedlist main.o
+linkedlist: main.o exceptions.o 
+	$(CXX) -o linkedlist main.o exceptions.o 
 
-all_tests: $(TEST_DEPENDENCIES) runtests.o
-	$(CXX) -o all_tests $(TEST_DEPENDENCIES) runtests.o $(LINKERS)
+all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
+	$(CXX) -o all_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
+		$(LINKERS)
+
+main.o: main.cpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
+exceptions.o: exceptions.cpp
+	$(CXX) $(CXXFLAGS) -c exceptions.cpp
 
 runtests.o: runtests.cpp
 	$(CXX) $(CXXFLAGS) -c runtests.cpp
@@ -36,15 +46,9 @@ test_listnode.o: test_listnode.cpp
 test_linkedlist.o: test_linkedlist.cpp
 	$(CXX) $(CXXFLAGS) -c test_linkedlist.cpp
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
-
-tests.o: tests.cpp
-	$(CXX) $(CXXFLAGS) -c tests.cpp
-
 clean:
-	rm -f *.o *.exe linkedlist all_tests
-	rm -f tests/*.o
+	FILES := $(wildcard *.o *.exe *.out) $(wildcard tests/*.o)
+	$(foreach file,$(FILES),$(REMOVE) file)
 
 commit:
 	git commit -a -m "$m"

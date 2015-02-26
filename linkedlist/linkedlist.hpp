@@ -14,6 +14,7 @@
 #include <iostream>
 
 #include "listnode.hpp"
+#include "../exceptions.hpp"
 
 
 template <typename T>
@@ -189,7 +190,8 @@ template <typename T> inline
 void LinkedList<T>::remove()
 {
 	if (numElements_ == 0)
-		throw std::string("Can't remove from an empty list");
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+
 	// Setting it up like this eliminates duplicate code.
 	ListNode<T>* newHead = nullptr;
 	if (numElements_ > 1) {
@@ -204,7 +206,7 @@ template <typename T> inline
 void LinkedList<T>::remove(std::size_t n)
 {
 	if (n >= numElements_) 
-		throw std::string("Index out of range");
+		throw IndexOutOfBoundsException(n, std::string("LinkedList"));
 
 	std::size_t index = n-1;
 	ListNode<T>* prev = get(index);
@@ -225,7 +227,7 @@ T LinkedList<T>::pop()
 		newHead = head_->getNext();
 		value = head_->getValue();
 	} else if (numElements_ == 0) {
-		throw std::string("Can't pop from an empty list");
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
 	}
 	delete head_;
 	head_ = newHead;
@@ -237,7 +239,7 @@ template <typename T> inline
 T LinkedList<T>::pop(std::size_t n)
 {
 	if (n >= numElements_) 
-		throw std::string("Index out of range");
+		throw IndexOutOfBoundsException(n, std::string("LinkedList"));
 
 	std::size_t index = n-1;
 	ListNode<T>* prev = get(index);

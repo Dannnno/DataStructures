@@ -4,6 +4,8 @@
 #include "gtest/gtest.h"
 
 #include "../linkedlist/linkedlist.hpp"
+#include "../exceptions.hpp"
+
 
 TEST(LinkedListTest, constructor) {
 	int initarray[5] = {1, 2, 3, 4, 5};
@@ -87,13 +89,13 @@ TEST(LinkedListTest, stringLengthTwo) {
 TEST(LinkedListTest, popDefaultEmptyList) {
 	LinkedList<int> list;
 
-	EXPECT_THROW(list.pop(), std::string);
+	EXPECT_THROW(list.pop(), IndexOutOfBoundsException);
 }
 
 TEST(LinkedListTest, popSpecificEmptyList) {
 	LinkedList<int> list;
 
-	EXPECT_THROW(list.pop(1), std::string);
+	EXPECT_THROW(list.pop(1), IndexOutOfBoundsException);
 }
 
 TEST(LinkedListTest, popDefaultNonEmptyList) {
@@ -116,19 +118,19 @@ TEST(LinkedListTest, popOutOfRange) {
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
-	EXPECT_THROW(list.pop(5), std::string);
+	EXPECT_THROW(list.pop(5), IndexOutOfBoundsException);
 }
 
 TEST(LinkedListTest, removeDefaultEmptyList) {
 	LinkedList<int> list;
 
-	EXPECT_THROW(list.remove(), std::string);
+	EXPECT_THROW(list.remove(), IndexOutOfBoundsException);
 }
 
 TEST(LinkedListTest, removeSpecificEmptyList) {
 	LinkedList<int> list;
 
-	EXPECT_THROW(list.remove(1), std::string);
+	EXPECT_THROW(list.remove(1), IndexOutOfBoundsException);
 }
 
 TEST(LinkedListTest, removeDefaultNonEmptyList) {
@@ -150,5 +152,5 @@ TEST(LinkedListTest, removeOutOfRange) {
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
-	EXPECT_THROW(list.remove(5), std::string);
+	EXPECT_THROW(list.remove(5), IndexOutOfBoundsException);
 }
