@@ -259,10 +259,11 @@ T LinkedList<T>::pop()
 	if (numElements_ > 1) {
 		newHead = head_->next_;
 		value = head_->value_;
-	} else if (numElements_ == 0) {
-		value = 0;   // clang complained without this
+	} else if (numElements_ == 1)
+		value = head_->value_;
+	else 
 		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
-	}
+	
 	delete head_;
 	head_ = newHead;
 	--numElements_;
