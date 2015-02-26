@@ -38,10 +38,10 @@ IndexOutOfBoundsException::IndexOutOfBoundsException(
 
 	string indexString = toString<size_t>(index_);
 	size_t arraySize = \
-		34 + indexString.length() + iterableType_.length();
+		46 + indexString.length() + iterableType_.length();
 	message_ = new char[arraySize];
 
-	string mstring = "Index " + indexString + " of type " + \
+	string mstring = "Index " + indexString + " in iterable of type " + \
 		iterableType_ + " is out of bounds.";
 	for (size_t i = 0; i < arraySize; ++i) {
 		message_[i] = mstring[i];

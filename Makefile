@@ -25,16 +25,6 @@ TEST_OBJ = $(TESTS:.cpp=.o)
 TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque) 
 
 
-deque: main.o exceptions.o
-	$(CXX) -o deque main.o excceptions.o
-
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
-
-exceptions.o: exceptions.cpp
-	$(CXX) $(CXXFLAGS) -c exceptions.cpp
-
-
 all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
 	$(CXX) -o all_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
 		$(LINKERS)
@@ -47,6 +37,9 @@ test_linkedlist.o: test_linkedlist.cpp
 
 test_deque.o: test_deque.cpp
 	$(CXX) $(CXXFLAGS) -c test_deque.cpp
+
+exceptions.o: exceptions.cpp
+	$(CXX) $(CXXFLAGS) -c exceptions.cpp
 
 
 clean:

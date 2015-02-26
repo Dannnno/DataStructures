@@ -68,6 +68,11 @@ public:
 	void append(T value);
 
 	/**
+	 * \brief Adds a node to the start of a list.
+	 */
+	void appendLeft(T value);
+
+	/**
 	 * \brief Removes the first item in the list.
 	 */
 	void remove();
@@ -88,6 +93,11 @@ public:
 	 *		  in the list.
 	 */
 	T pop(std::size_t n);
+
+	/**
+	 * \brief inserts an item at the indicated index.
+	 */
+	void insert(std::size_t index, T value);
 
 	/**
 	 * \brief Overloads the mutable subscript operator.
@@ -226,6 +236,28 @@ void Deque<T>::append(T node)
 }
 
 template <typename T> inline
+void Deque<T>::appendLeft(T node)
+{
+	Node<T>* newNode = new Node<T>(node);
+	if (numElements_ == 0) {
+		head_ = newNode;
+		tail_ = head_;
+	} else if (numElements_ == 1) {
+		tail_ = head_;
+		head_ = newNode;
+		head_->next_ = tail_;
+		tail_->previous_ = head_;
+	} else {
+		Node<T>* first = head_;
+		first->previous_ = newNode;
+		newNode->next_ = first;
+		head_ = newNode;
+	}
+
+	++numElements_;
+}
+
+template <typename T> inline
 void Deque<T>::remove()
 {
 	if (numElements_ == 0)
@@ -268,6 +300,7 @@ T Deque<T>::pop()
 		newHead = head_->next_;
 		value = head_->value_;
 	} else if (numElements_ == 0) {
+		value = 0;   // clang complained without this
 		throw IndexOutOfBoundsException(0, std::string("Deque"));
 	}
 	delete head_;
@@ -283,7 +316,7 @@ T Deque<T>::pop(std::size_t n)
 	if (n >= numElements_) 
 		throw IndexOutOfBoundsException(n, std::string("Deque"));
 
-	std::size_t index = n-1;
+	std::size_t index = n - 1;
 	Node<T>* prev = getNode(index);
 	Node<T>* toRemove = prev->next_;
 	Node<T>* after = toRemove->next_;
@@ -294,6 +327,40 @@ T Deque<T>::pop(std::size_t n)
 	--numElements_;	
 	return value;
 }	
+
+template <typename T> inline
+void Deque<T>::insert(std::size_t n, T value)
+{
+	if (n > numElements_)
+		throw IndexOutOfBoundsException(n, std::string("Deque"));
+
+	Node<T>* newNode = new Node<T>(value);
+
+	if (numElements_ == 0) {
+		head_ = newNode;
+		tail_ = newNode;
+	} else if (numElements_ == n) {
+		Node<T>* last = tail_;
+		last->next_ = newNode;
+		newNode->previous_ = last;
+		tail_ = newNode;
+	} else if (n == 0) {
+		Node<T>* first = head_;
+		newNode->next_ = first;
+		first->previous_ = newNode;
+		head_ = newNode;
+	} else {
+		std::size_t index = n - 1;
+		Node<T>* prev = getNode(index);
+		Node<T>* toPush = prev->next_;
+
+		prev->next_ = newNode;
+		newNode->previous_ = prev;
+		toPush->previous_ = newNode;
+		newNode->next_ = toPush;
+	}
+	++numElements_;
+}
 
 template <typename T> inline 
 T& Deque<T>::operator[](std::size_t index)

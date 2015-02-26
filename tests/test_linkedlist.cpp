@@ -154,3 +154,73 @@ TEST(LinkedListTest, removeOutOfRange) {
 
 	EXPECT_THROW(list.remove(5), IndexOutOfBoundsException);
 }
+
+
+TEST(LinkedListTest, insertEmpty) {
+	LinkedList<int> list;
+	list.insert(0, 1);
+
+	EXPECT_EQ(1, list.size());
+	EXPECT_EQ(1, list[0]);
+}
+
+TEST(LinkedListTest, insertEmptyBad) {
+	LinkedList<int> list;
+
+	EXPECT_THROW(list.insert(1, 1), IndexOutOfBoundsException);
+}
+
+TEST(LinkedListTest, insertSingle) {
+	LinkedList<int> list;
+	list.append(1);
+	list.insert(0, 2);
+
+	EXPECT_EQ(2, list.size());
+	EXPECT_EQ(2, list[0]);
+}
+
+TEST(LinkedListTest, insertMany) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	list.insert(3, 7);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(7, list[3]);
+	EXPECT_EQ(3, list[2]);
+	EXPECT_EQ(4, list[4]);
+}
+
+TEST(LinkedListTest, insertEnd) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	list.insert(5, 7);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(7, list[5]);
+}
+
+TEST(LinkedListTest, appendToEmpty) {
+	LinkedList<int> list;
+	list.append(1);
+
+	EXPECT_EQ(1, list.size());
+	EXPECT_EQ(1, list[0]);
+}
+
+TEST(LinkedListTest, appendToOne) {
+	LinkedList<int> list;
+	list.append(1);
+	list.append(2);
+
+	EXPECT_EQ(2, list.size());
+	EXPECT_EQ(2, list[1]);
+}
+
+TEST(LinkedListTest, appendToMany) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	list.append(6);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(6, list[5]);
+}

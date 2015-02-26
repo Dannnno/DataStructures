@@ -154,3 +154,99 @@ TEST(DequeTest, removeOutOfRange) {
 
 	EXPECT_THROW(list.remove(5), IndexOutOfBoundsException);
 }
+
+TEST(DequeTest, appendLeftEmpty) {
+	Deque<int> list;
+	list.appendLeft(1);
+
+	EXPECT_EQ(1, list.size());
+	EXPECT_EQ(false, list.isEmpty());
+	EXPECT_EQ(1, list[0]);
+}
+
+TEST(DequeTest, appendLeftOne) {
+	Deque<int> list;
+	list.append(1);
+	list.appendLeft(2);
+
+	EXPECT_EQ(2, list.size());
+	EXPECT_EQ(2, list[0]);
+}
+
+TEST(DequeTest, appendLeftMany) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list(initarray, 5);
+	list.appendLeft(6);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(6, list[0]);
+}
+
+TEST(DequeTest, insertEmpty) {
+	Deque<int> list;
+	list.insert(0, 1);
+
+	EXPECT_EQ(1, list.size());
+	EXPECT_EQ(1, list[0]);
+}
+
+TEST(DequeTest, insertEmptyBad) {
+	Deque<int> list;
+
+	EXPECT_THROW(list.insert(1, 1), IndexOutOfBoundsException);
+}
+
+TEST(DequeTest, insertSingle) {
+	Deque<int> list;
+	list.append(1);
+	list.insert(0, 2);
+
+	EXPECT_EQ(2, list.size());
+	EXPECT_EQ(2, list[0]);
+}
+
+TEST(DequeTest, insertMany) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list(initarray, 5);
+	list.insert(3, 7);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(7, list[3]);
+	EXPECT_EQ(3, list[2]);
+	EXPECT_EQ(4, list[4]);
+}
+
+TEST(DequeTest, insertEnd) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list(initarray, 5);
+	list.insert(5, 7);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(7, list[5]);
+}
+
+TEST(DequeTest, appendToEmpty) {
+	Deque<int> list;
+	list.append(1);
+
+	EXPECT_EQ(1, list.size());
+	EXPECT_EQ(1, list[0]);
+}
+
+TEST(DequeTest, appendToOne) {
+	Deque<int> list;
+	list.append(1);
+	list.append(2);
+
+	EXPECT_EQ(2, list.size());
+	EXPECT_EQ(2, list[1]);
+}
+
+TEST(DequeTest, appendToMany) {
+	int initarray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list(initarray, 5);
+	list.append(6);
+
+	EXPECT_EQ(6, list.size());
+	EXPECT_EQ(6, list[5]);
+}

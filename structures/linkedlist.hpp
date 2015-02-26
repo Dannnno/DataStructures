@@ -89,6 +89,11 @@ public:
 	T pop(std::size_t n);
 
 	/**
+	 * \brief inserts an item at the indicated index.
+	 */
+	void insert(std::size_t index, T value);
+
+	/**
 	 * \brief Overloads the mutable subscript operator.
 	 */
     T& operator[](std::size_t index);
@@ -255,6 +260,7 @@ T LinkedList<T>::pop()
 		newHead = head_->next_;
 		value = head_->value_;
 	} else if (numElements_ == 0) {
+		value = 0;   // clang complained without this
 		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
 	}
 	delete head_;
@@ -278,6 +284,36 @@ T LinkedList<T>::pop(std::size_t n)
 	prev->next_ = after;
 	--numElements_;	
 	return value;
+}
+
+template <typename T> inline
+void LinkedList<T>::insert(std::size_t n, T value)
+{
+	if (n > numElements_)
+		throw IndexOutOfBoundsException(n, std::string("Deque"));
+
+	Node<T>* newNode = new Node<T>(value);
+
+	if (numElements_ == 0) {
+		head_ = newNode;
+		tail_ = newNode;
+	} else if (numElements_ == n) {
+		Node<T>* last = tail_;
+		last->next_ = newNode;
+		tail_ = newNode;
+	} else if (n == 0) {
+		Node<T>* first = head_;
+		newNode->next_ = first;
+		head_ = newNode;
+	} else {
+		std::size_t index = n - 1;
+		Node<T>* prev = getNode(index);
+		Node<T>* toPush = prev->next_;
+		
+		prev->next_ = newNode;
+		newNode->next_ = toPush;
+	}
+	++numElements_;
 }
 
 template <typename T> inline 
