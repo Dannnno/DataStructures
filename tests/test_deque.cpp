@@ -3,29 +3,29 @@
 
 #include "gtest/gtest.h"
 
-#include "../structures/linkedlist.hpp"
+#include "../structures/deque.hpp"
 #include "../exceptions.hpp"
 
 
-TEST(LinkedListTest, constructor) {
+TEST(DequeTest, constructor) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 	EXPECT_EQ(false, list.isEmpty());
 	EXPECT_EQ(5, list.size());
 }
 
-TEST(LinkedListTest, empty) {
-	LinkedList<int> list1;
-	LinkedList<int> list2;
+TEST(DequeTest, empty) {
+	Deque<int> list1;
+	Deque<int> list2;
 	list2.append(1);
 
 	EXPECT_EQ(true, list1.isEmpty());
 	EXPECT_EQ(false, list2.isEmpty());
 }
 
-TEST(LinkedListTest, size) {
-	LinkedList<int> list1;
-	LinkedList<int> list2;
+TEST(DequeTest, size) {
+	Deque<int> list1;
+	Deque<int> list2;
 	list2.append(1);
 	list2.append(2);
 
@@ -33,8 +33,8 @@ TEST(LinkedListTest, size) {
 	EXPECT_EQ(2, list2.size());
 }
 
-TEST(LinkedListTest, LengthOne) {
-	LinkedList<int> list;
+TEST(DequeTest, LengthOne) {
+	Deque<int> list;
 	list.append(1);
 
 	EXPECT_EQ(1, list.getHead());
@@ -42,8 +42,8 @@ TEST(LinkedListTest, LengthOne) {
 	EXPECT_EQ(list.getHead(), list.getTail());
 }
 
-TEST(LinkedListTest, LengthTwo) {
-	LinkedList<int> list;
+TEST(DequeTest, LengthTwo) {
+	Deque<int> list;
 	list.append(1);
 	list.append(2);
 
@@ -52,8 +52,8 @@ TEST(LinkedListTest, LengthTwo) {
 	EXPECT_NE(list.getHead(), list.getTail());	
 }
 
-TEST(LinkedListTest, subscript) {
-	LinkedList<int> list;
+TEST(DequeTest, subscript) {
+	Deque<int> list;
 	list.append(1);
 	list.append(2);
 
@@ -61,8 +61,8 @@ TEST(LinkedListTest, subscript) {
 	EXPECT_EQ(2, list[1]);
 }
 
-TEST(LinkedListTest, stringLengthOne) {
-	LinkedList<int> list;
+TEST(DequeTest, stringLengthOne) {
+	Deque<int> list;
 	list.append(1);
 
 	std::ostringstream stream;
@@ -73,8 +73,8 @@ TEST(LinkedListTest, stringLengthOne) {
 	EXPECT_EQ(str.length(), 4);
 }
 
-TEST(LinkedListTest, stringLengthTwo) {
-	LinkedList<int> list;
+TEST(DequeTest, stringLengthTwo) {
+	Deque<int> list;
 	list.append(1);
 	list.append(2);
 
@@ -86,71 +86,71 @@ TEST(LinkedListTest, stringLengthTwo) {
 	EXPECT_EQ(str.length(), 7);
 }
 
-TEST(LinkedListTest, popDefaultEmptyList) {
-	LinkedList<int> list;
+TEST(DequeTest, popDefaultEmptyList) {
+	Deque<int> list;
 
 	EXPECT_THROW(list.pop(), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, popSpecificEmptyList) {
-	LinkedList<int> list;
+TEST(DequeTest, popSpecificEmptyList) {
+	Deque<int> list;
 
 	EXPECT_THROW(list.pop(1), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, popDefaultNonEmptyList) {
+TEST(DequeTest, popDefaultNonEmptyList) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 
 	EXPECT_EQ(1, list.pop());
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, popSpecificNonEmptyList) {
+TEST(DequeTest, popSpecificNonEmptyList) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 
 	EXPECT_EQ(3, list.pop(2));
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, popOutOfRange) {
+TEST(DequeTest, popOutOfRange) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 
 	EXPECT_THROW(list.pop(5), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeDefaultEmptyList) {
-	LinkedList<int> list;
+TEST(DequeTest, removeDefaultEmptyList) {
+	Deque<int> list;
 
 	EXPECT_THROW(list.remove(), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeSpecificEmptyList) {
-	LinkedList<int> list;
+TEST(DequeTest, removeSpecificEmptyList) {
+	Deque<int> list;
 
 	EXPECT_THROW(list.remove(1), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeDefaultNonEmptyList) {
+TEST(DequeTest, removeDefaultNonEmptyList) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 	list.remove();
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, removeSpecificNonEmptyList) {
+TEST(DequeTest, removeSpecificNonEmptyList) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 	list.remove(2);
 	EXPECT_EQ(4, list.size());
 	EXPECT_EQ(4, list[2]);
 }
 
-TEST(LinkedListTest, removeOutOfRange) {
+TEST(DequeTest, removeOutOfRange) {
 	int initarray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list(initarray, 5);
+	Deque<int> list(initarray, 5);
 
 	EXPECT_THROW(list.remove(5), IndexOutOfBoundsException);
 }
