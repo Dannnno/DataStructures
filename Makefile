@@ -4,7 +4,7 @@ ifndef CXX
     CXX := g++
 endif
 
-LINKERS = -lgtest
+LINKERS = -lgtest -fprofile-arcs
 
 # Adapted from http://stackoverflow.com/a/12099167/3076272
 ifneq ($(OS),Windows_NT)
@@ -17,7 +17,8 @@ else
     REMOVE := del
 endif
 
-CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
+CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11 \
+	-fprofile-arcs -ftest-coverage
 
 TESTS = tests/test_%.cpp
 TEST_OBJ = $(TESTS:.cpp=.o)
@@ -26,7 +27,7 @@ TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque map)
 
 
 all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
-	$(CXX) -o a_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
+	$(CXX) -o all_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
 		$(LINKERS)
 
 runtests.o: runtests.cpp
@@ -50,7 +51,8 @@ exceptions.o: exceptions.cpp exceptions.hpp
 
 
 clean:
-	FILES := $(wildcard *.o *.exe *.out) $(wildcard tests/*.o)
+	FILES := $(wildcard *.o *.exe *.out *.gcno) \
+		$(wildcard tests/*.o tests/*.gcno)
 	$(foreach file,$(FILES),$(REMOVE) file)
 
 commit:

@@ -8,6 +8,9 @@
 
 #include <iterator>
 
+#include "listnode.hpp"
+
+
 /**
  * \brief Underlying iterator class.
  */
@@ -17,36 +20,49 @@ class ListIterator
 public:
     
     typedef std::forward_iterator_tag iterator_category;
+
+    /**
+     * \brief The default constructor is disabled.
+     */
+    ListIterator() = delete;
+
+    /**
+     * \brief All iterators should have a current node.
+     */
+    ListIterator(ListNode<T>* node);
 	
 	/**
 	 * \brief Prefix increment operator overloading.
 	 */
-	virtual ListIterator<T> operator++() = 0;
+	ListIterator<T> operator++();
 
 	/**
 	 * \brief Postfix increment operator overloading.
 	 */
-	virtual ListIterator<T> operator++(int junk) = 0;
+	ListIterator<T> operator++(int junk);
 
 	/**
 	 * \brief Dereferencing operator overloading.
 	 */
-	virtual T& operator*() = 0;
+	ListNode<T>& operator*();
 
 	/**
 	 * \brief Member access operator overriding.
 	 */
-	virtual T* operator->() = 0;
+	ListNode<T>* operator->();
 
 	/**
 	 * \brief Equality operator overriding.
 	 */
-	virtual bool operator==(const ListIterator<T>& rhs) = 0;
+	bool operator==(const ListIterator<T>& rhs);
 
 	/**
 	 * \brief Inequality operator overriding.
 	 */
-	virtual bool operator!=(const ListIterator<T>& rhs) = 0;
+	bool operator!=(const ListIterator<T>& rhs);
+
+private:
+	ListNode<T>* current_;
 };
 
 /**
@@ -58,12 +74,103 @@ class ConstListIterator
 {
 public:
     typedef std::forward_iterator_tag iterator_category;
-    virtual ConstListIterator operator++() = 0;
-    virtual ConstListIterator operator++(int junk) = 0;
-    virtual const T& operator*() = 0;
-    virtual const T* operator->() = 0;
-    virtual bool operator==(const ConstListIterator<T>& rhs) = 0;
-    virtual bool operator!=(const ConstListIterator<T>& rhs) = 0;
+    ConstListIterator() = delete;
+    ConstListIterator(ListNode<T>* node);
+    ConstListIterator operator++();
+    ConstListIterator operator++(int junk);
+    const ListNode<T>& operator*();
+    const ListNode<T>* operator->();
+    bool operator==(const ConstListIterator<T>& rhs);
+    bool operator==(std::nullptr_t& rhs);
+    bool operator!=(const ConstListIterator<T>& rhs);
+
+private:
+	ListNode<T>* current_;
 };
+
+template <typename T> inline
+ListIterator<T>::ListIterator(ListNode<T>* node) : current_(node) {
+}
+
+template <typename T> inline
+ConstListIterator<T>::ConstListIterator(ListNode<T>* node) : 
+	current_(node) {
+}
+
+template <typename T> inline
+ListIterator<T> ListIterator<T>::operator++()
+{
+	current_ = current_->getNext();
+	return *this;
+}
+
+template <typename T> inline
+ListIterator<T> ListIterator<T>::operator++(int junk)
+{
+	current_ = current_->getNext();
+	return *this;
+}
+
+template <typename T> inline
+ConstListIterator<T> ConstListIterator<T>::operator++()
+{
+	current_ = current_->getNext();
+	return *this;
+}
+
+template <typename T> inline
+ConstListIterator<T> ConstListIterator<T>::operator++(int junk)
+{
+	current_ = current_->getNext();
+	return *this;
+}
+
+template <typename T> inline
+ListNode<T>& ListIterator<T>::operator*()
+{
+	return *current_;
+}
+
+template <typename T> inline
+const ListNode<T>& ConstListIterator<T>::operator*()
+{
+	return *current_;
+}
+
+template <typename T> inline
+ListNode<T>* ListIterator<T>::operator->()
+{
+	return current_;
+}
+
+template <typename T> inline
+const ListNode<T>* ConstListIterator<T>::operator->()
+{
+	return current_;
+}
+
+template <typename T> inline
+bool ListIterator<T>::operator==(const ListIterator<T>& rhs)
+{
+	return current_ == rhs.current_;
+}
+
+template <typename T> inline
+bool ConstListIterator<T>::operator==(const ConstListIterator<T>& rhs)
+{
+	return current_ == rhs.current_;
+}
+
+template <typename T> inline
+bool ListIterator<T>::operator!=(const ListIterator<T>& rhs)
+{
+	return current_ != rhs.current_;
+}
+
+template <typename T> inline
+bool ConstListIterator<T>::operator!=(const ConstListIterator<T>& rhs)
+{
+	return current_ != rhs.current_;
+}
 
 #endif

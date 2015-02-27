@@ -12,7 +12,7 @@ before_install:
  - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
  - make all_tests
 script:
- - ./all_tests 
+ - valgrind all_tests 
 notifications:
   recipients:
     - dannnno16@gmail.com

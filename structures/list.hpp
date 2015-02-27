@@ -44,12 +44,22 @@ public:
 	/**
 	 * \brief The head (first item) of the list.
 	 */
-	T& getHead();
+	virtual T& getHead() = 0;
+
+	/**
+	 * \brief Constant version of getHead()
+	 */
+	virtual const T& getHead() const = 0;
 
 	/**
 	 * \brief The tail (last item) of the list.
 	 */
-	T& getTail();
+	virtual T& getTail() = 0;
+
+	/**
+	 * \brief Constant version of getTail()
+	 */
+	virtual const T& getTail() const = 0;
 
 	/**
 	 * \brief Adds a node to the end of the list.
@@ -98,12 +108,12 @@ public:
   	/**
   	 * \brief Returns the size of the list
   	 */
-  	std::size_t size() const;
+  	virtual std::size_t size() const = 0;
 
   	/**
   	 * \brief Returns whether or not the list is empty.
   	 */
-	bool isEmpty() const;
+	virtual bool isEmpty() const = 0;
 
     /**
      * \brief Returns the start of the iterator.
@@ -153,33 +163,13 @@ private:
 	ListNode<T>* tail_;
 };
 
-template <typename T> inline T& List<T>::getHead()
-{
-	return head_->value_;
-}
-
-template <typename T> inline T& List<T>::getTail()
-{
-	return tail_->value_;
-}
-
-template <typename T> inline std::size_t List<T>::size() const
-{
-	return numElements_;
-}
-
-template <typename T> inline bool List<T>::isEmpty() const
-{
-	return numElements_ == 0;
-}
-
 template <typename T> inline 
 std::ostream& operator<<(std::ostream& str, const List<T>& list)
 {
 	str << "{";
-	for (ListNode<T>* node : list) {
-		str << *node;
-		if (node != list.getTail())
+	for (auto node : list) {
+		str << node;
+		if (node.getValue() != list.getTail())
 			str << ", ";
 	}
 	str << "}" << std::endl;
