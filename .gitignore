@@ -28,5 +28,5 @@
 *.app
 
 # Coverage files
-*.gcdo
+*.gcda
 *.gcno

@@ -39,7 +39,7 @@ public:
 	/**
 	 * \brief Postfix increment operator overloading.
 	 */
-	ListIterator<T> operator++(int junk);
+	ListIterator<T> operator++(int);
 
 	/**
 	 * \brief Dereferencing operator overloading.
@@ -77,7 +77,7 @@ public:
     ConstListIterator() = delete;
     ConstListIterator(ListNode<T>* node);
     ConstListIterator operator++();
-    ConstListIterator operator++(int junk);
+    ConstListIterator operator++(int);
     const ListNode<T>& operator*();
     const ListNode<T>* operator->();
     bool operator==(const ConstListIterator<T>& rhs);
@@ -105,7 +105,7 @@ ListIterator<T> ListIterator<T>::operator++()
 }
 
 template <typename T> inline
-ListIterator<T> ListIterator<T>::operator++(int junk)
+ListIterator<T> ListIterator<T>::operator++(int)
 {
 	current_ = current_->getNext();
 	return *this;
@@ -119,7 +119,7 @@ ConstListIterator<T> ConstListIterator<T>::operator++()
 }
 
 template <typename T> inline
-ConstListIterator<T> ConstListIterator<T>::operator++(int junk)
+ConstListIterator<T> ConstListIterator<T>::operator++(int)
 {
 	current_ = current_->getNext();
 	return *this;
