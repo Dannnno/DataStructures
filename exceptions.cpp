@@ -57,3 +57,41 @@ const char* IndexOutOfBoundsException::what() const throw()
 {
 	return message_;
 }
+
+template <typename KEY>
+KeyError<KEY>::KeyError()
+{
+	message_ = new char[12];
+	string mstring = "Invalid key";
+	for (size_t i = 0; i < 12; ++i) {
+		message_[i] = mstring[i];
+	}
+}
+
+template <typename KEY>
+KeyError<KEY>::KeyError(KEY key, string type) : 
+	key_(key), mappingType_(type) {
+
+	string keyString = toString<KEY>(key);
+	size_t arraySize = \
+		34 + keyString.length() + mappingType_.length();
+	message_ = new char[arraySize];
+
+	string mstring = "Key " + keyString + " is invalid for " + \
+		"mapping type " + mappingType_;
+	for (size_t i = 0; i < arraySize; ++i) {
+		message_[i] = mstring[i];
+	}
+}
+
+template <typename KEY>
+KeyError<KEY>::~KeyError()
+{
+	delete [] message_;
+}
+
+template <typename KEY>
+const char* KeyError<KEY>::what() const throw()
+{
+	return message_;
+}

@@ -22,7 +22,7 @@ CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
 TESTS = tests/test_%.cpp
 TEST_OBJ = $(TESTS:.cpp=.o)
 
-TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque) 
+TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque map) 
 
 
 all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
@@ -32,13 +32,20 @@ all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
 runtests.o: runtests.cpp
 	$(CXX) $(CXXFLAGS) -c runtests.cpp
 
-test_linkedlist.o: test_linkedlist.cpp
+# tests/test_%.o: tests/test_%.cpp
+# 	$(CXX) $(CXXFLAGS) -c test_%.cpp
+# 	$(info test_%)
+
+test_linkedlist.o: test_linkedlist.cpp linkedlist.hpp
 	$(CXX) $(CXXFLAGS) -c test_linkedlist.cpp
 
-test_deque.o: test_deque.cpp
+test_deque.o: test_deque.cpp deque.hpp
 	$(CXX) $(CXXFLAGS) -c test_deque.cpp
 
-exceptions.o: exceptions.cpp
+test_map.o: test_map.cpp map.hpp
+	$(CXX) $(CXXFLAGS) -c test_map.cpp
+
+exceptions.o: exceptions.cpp exceptions.hpp
 	$(CXX) $(CXXFLAGS) -c exceptions.cpp
 
 

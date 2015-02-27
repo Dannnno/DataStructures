@@ -12,8 +12,8 @@ least take a crack at them.  I'll probably eventually implement some classic
 "interview" algorithms here.  I try to test everything using the google 
 test framework.  Generate the tests by running
 
-	> $ make all_tests
+	$ make all_tests
 
 and then you can run the resulting executable as 
 
-	> $ ./all_tests
+	$ ./all_tests

@@ -50,4 +50,38 @@ private:
 	std::string iterableType_;
 };
 
+
+/**
+ * \brief Exception to be thrown if an invalid key is used.
+ */
+template <typename KEY>
+class KeyError : public std::exception
+{
+public:
+/**
+	 * \brief Default constructor.
+	 */
+	KeyError();
+
+	/**
+	 * \brief Constructor for the exception.
+	 */
+	KeyError(KEY key_, std::string type);
+
+	/**
+	 * \brief Destroys the dynamically allocated message array.
+	 */
+	~KeyError();
+
+	/**
+	 * \brief Throws the message for the exception.
+	 */
+ 	virtual const char* what() const throw();
+
+private:
+	char* message_;
+	KEY key_;
+	std::string mappingType_;
+};
+
 #endif

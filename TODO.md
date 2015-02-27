@@ -6,35 +6,45 @@ be removed from this list once implemented.
 
 Mapping types
 =============
-Bidirectional map
-Unidirectional map
-Hashmap
+<ul>
+	<li>Bidirectional map</li>
+	<li>Unidirectional map</li>
+	<li>Hashmap</li>
+</ul>
 
 Buffer types
 ============
-Buffer
-Circular Buffer
+<ul>
+	<li>Buffer</li>
+	<li>Circular Buffer</li>
+</ul>
 
 Array types
 ===========
-Hashed array tree
-Parallel array
+<ul>
+	<li>Hashed array tree</li>
+	<li>Parallel array</li>
+</ul>
 
 List types
 ==========
-Unrolled linked list
-VList
-XOR linked list
+<ul>
+	<li>Unrolled linked list</li>
+	<li>VList</li>
+	<li>XOR linked list</li>
+</ul>
 
 Tree types
 ==========
-BST
-Red Black Tree
-Rope
-Scapegoat Tree
-Splay Tree
-B Tree
-Heap
-Graph (really these are all graphs)
-Directed Graph
-DAG
+<ul>
+	<li>BST</li>
+	<li>Red Black Tree</li>
+	<li>Rope</li>
+	<li>Scapegoat Tree</li>
+	<li>Splay Tree</li>
+	<li>B Tree</li>
+	<li>Heap</li>
+	<li>Graph (really these are all graphs)</li>
+	<li>Directed Graph</li>
+	<li>DAG</li>
+</ul>
