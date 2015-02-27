@@ -13,6 +13,7 @@
 #include <iterator>
 
 #include "listnode.hpp"
+#include "listiterator.hpp"
 #include "../exceptions.hpp"
 
 
@@ -104,81 +105,25 @@ public:
   	 */
 	bool isEmpty() const;
 
-	/**
-	 * \brief Underlying iterator class.
-	 */
-	class iterator
-	{
-	public:
-        
-        typedef std::forward_iterator_tag iterator_category;
-		
-		/**
-		 * \brief Prefix increment operator overloading.
-		 */
-		virtual iterator operator++() = 0;
-
-		/**
-		 * \brief Postfix increment operator overloading.
-		 */
-		virtual iterator operator++(int junk) = 0;
-
-		/**
-		 * \brief Dereferencing operator overloading.
-		 */
-		virtual T& operator*() = 0;
-
-		/**
-		 * \brief Member access operator overriding.
-		 */
-		virtual T* operator->() = 0;
-
-		/**
-		 * \brief Equality operator overriding.
-		 */
-		virtual bool operator==(const iterator& rhs) = 0;
-
-		/**
-		 * \brief Inequality operator overriding.
-		 */
-		virtual bool operator!=(const iterator& rhs) = 0;
-    };
-
-    /**
-     * \brief Underlying const_iterator class.
-     * \remarks Constant versions of everything provided in iterator.
-     */
-    class const_iterator
-    {
-    public:
-        typedef std::forward_iterator_tag iterator_category;
-        virtual const_iterator operator++() = 0;
-        virtual const_iterator operator++(int junk) = 0;
-        virtual const T& operator*() = 0;
-        virtual const T* operator->() = 0;
-        virtual bool operator==(const iterator& rhs) = 0;
-        virtual bool operator!=(const iterator& rhs) = 0;
-    };
-
     /**
      * \brief Returns the start of the iterator.
      */
-	virtual iterator begin() = 0;
+	virtual ListIterator<T> begin() = 0;
 
 	/**
 	 * \brief Returns the end of the iterator.
 	 */
-    virtual iterator end() = 0;
+    virtual ListIterator<T> end() = 0;
 
     /** 
-     * \brief Returns a costant version of the iterator (from the start)
+     * \brief Returns a constant version of the iterator (from the start)
      */
-    virtual const_iterator begin() const = 0;
+    virtual ConstListIterator<T> begin() const = 0;
 
     /**
      * \brief Returns a constant version of the iterator (at the end).
      */
-    virtual const_iterator end() const = 0;
+    virtual ConstListIterator<T> end() const = 0;
 
     /**
      * \brief Sorts the current list.
@@ -189,7 +134,7 @@ public:
      * \brief Returns a copy of the list in sorted order.
      * \post The original list is unchanged.
      */
-    virtual List<T> sorted() const = 0;
+    // virtual List<T> sorted() const = 0;
 
     /**
      * \brief Reverses the order of the list.
@@ -200,7 +145,7 @@ public:
      * \brief Returns a copy of the list, reversed.
      * \post The original list is unchanged.
      */
-    virtual List<T> reversed() = 0;
+    // virtual List<T> reversed() const = 0;
 
 private:
 	std::size_t numElements_;
@@ -234,7 +179,7 @@ std::ostream& operator<<(std::ostream& str, const List<T>& list)
 	str << "{";
 	for (ListNode<T>* node : list) {
 		str << *node;
-		if (i != list.size()-1) 
+		if (node != list.getTail())
 			str << ", ";
 	}
 	str << "}" << std::endl;
