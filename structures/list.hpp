@@ -10,29 +10,31 @@
 #include <cstddef>
 #include <string>
 #include <iostream>
+#include <iterator>
 
+#include "listnode.hpp"
 #include "../exceptions.hpp"
 
 
+/**
+ * \brief A paramaterized doubly linked list
+ */
 template <typename T>
 class List;
+
 
 /**
  * \brief Overloading the << operator to allow clean string 
  *        representations of the list.
  */
-template <typename T> virtual
+template <typename T>
 std::ostream& operator<<(std::ostream& str, const List<T>& list);
 
 
 template <typename T>
-/**
- * \brief A paramaterized doubly linked list
- */
 class List
 {
 public:
-
 	/**
 	 * \brief A default constructor.
 	 */
@@ -112,91 +114,109 @@ public:
   	 */
 	bool isEmpty() const;
 
+	/**
+	 * \brief Underlying iterator class.
+	 */
+	class iterator
+	{
+	public:
+        
+        typedef std::forward_iterator_tag iterator_category;
+		
+		/**
+		 * \brief Prefix increment operator overloading.
+		 */
+		virtual iterator operator++() = 0;
+
+		/**
+		 * \brief Postfix increment operator overloading.
+		 */
+		virtual iterator operator++(int junk) = 0;
+
+		/**
+		 * \brief Dereferencing operator overloading.
+		 */
+		virtual T& operator*() = 0;
+
+		/**
+		 * \brief Member access operator overriding.
+		 */
+		virtual T* operator->() = 0;
+
+		/**
+		 * \brief Equality operator overriding.
+		 */
+		virtual bool operator==(const iterator& rhs) = 0;
+
+		/**
+		 * \brief Inequality operator overriding.
+		 */
+		virtual bool operator!=(const iterator& rhs) = 0;
+    };
+
+    /**
+     * \brief Underlying const_iterator class.
+     * \remarks Constant versions of everything provided in iterator.
+     */
+    class const_iterator
+    {
+    public:
+        typedef std::forward_iterator_tag iterator_category;
+        virtual const_iterator operator++() = 0;
+        virtual const_iterator operator++(int junk) = 0;
+        virtual const T& operator*() = 0;
+        virtual const T* operator->() = 0;
+        virtual bool operator==(const self_type& rhs) = 0;
+        virtual bool operator!=(const self_type& rhs) = 0;
+    };
+
+    /**
+     * \brief Returns the start of the iterator.
+     */
+	virtual iterator begin() = 0;
+
+	/**
+	 * \brief Returns the end of the iterator.
+	 */
+    virtual iterator end() = 0;
+
+    /** 
+     * \brief Returns a costant version of the iterator (from the start)
+     */
+    virtual const_iterator begin() const = 0;
+
+    /**
+     * \brief Returns a constant version of the iterator (at the end).
+     */
+    virtual const_iterator end() const = 0;
+
+    /**
+     * \brief Sorts the current list.
+     */
+    virtual void sort() = 0;
+
+    /**
+     * \brief Returns a copy of the list in sorted order.
+     * \post The original list is unchanged.
+     */
+    virtual List<T> sorted() const = 0;
+
+    /**
+     * \brief Reverses the order of the list.
+     */
+    virtual void reverse() = 0;
+
+    /**
+     * \brief Returns a copy of the list, reversed.
+     * \post The original list is unchanged.
+     */
+    virtual List<T> reversed() = 0;
+
 private:
-	template <typename TYPE> static
-	struct ListNode 
-	{
-		TYPE value_;
-		Node<TYPE>* previous_;
-		Node<TYPE>* next_;
-		Node() = delete;
-		Node(TYPE value) : 
-			value_(value), previous_(nullptr), next_(nullptr) {}
-	};
-
 	std::size_t numElements_;
-	Node<T>* head_;
-	Node<T>* tail_;
-
-	/**
-	 * \brief getNodes the *node*, not the *value* at the given index.
-	 */
-	Node<T>* getNode(std::size_t& index)
-	{
-		Node<T>* current = head_;
-		Node<T>* next = nullptr;
-
-		for (size_t i = 0; i < index; ++i) {
-			next = current->next_;
-			current = next;
-		}
-
-		return current;
-	}
-
-	/**
-	 * \brief Constant version of getNode.
-	 */
-	Node<T>* cgetNode(const std::size_t& index) const
-	{
-		Node<T>* current = head_;
-		Node<T>* next = nullptr;
-
-		for (size_t i = 0; i < index; ++i) {
-			next = current->next_;
-			current = next;
-		}
-
-		return current;
-	}
+	ListNode<T>* head_;
+	ListNode<T>* tail_;
 };
-
-
-template <typename T> inline List<T>::List() :
-	numElements_(0), head_(nullptr), tail_(nullptr) {
-}
-
-template <typename T> inline List<T>::List(
-	T* arr, std::size_t length) : 
-		numElements_(length), head_(nullptr), tail_(nullptr) {
-	head_ = new Node<T>(arr[0]);
-
-	Node<T>* current = nullptr;
-	Node<T>* next = nullptr;
-	Node<T>* previous = nullptr;
-
-	current = head_;
-	for (std::size_t i = 1; i < length; ++i) {
-		next = new Node<T>(arr[i]);
-		current->next_ = next;
-		current->previous_ = previous;
-		previous = current;
-		current = next;
-	}
-	tail_ = current;
-	tail_->previous_ = previous;
-}
-
-template <typename T> inline List<T>::~List()
-{
-	Node<T>* current = head_;
-	Node<T>* next = nullptr;
-	while (current != nullptr) {
-		next = current->next_;
-		delete current;
-		current = next;
-	}
-}
 
 template <typename T> inline T& List<T>::getHead()
 {
@@ -206,167 +226,6 @@ template <typename T> inline T& List<T>::getHead()
 template <typename T> inline T& List<T>::getTail()
 {
 	return tail_->value_;
-}
-
-template <typename T> inline 
-void List<T>::append(T node)
-{
-	Node<T>* newNode = new Node<T>(node);
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = head_;
-	} else if (numElements_ == 1) {
-		head_->next_ = newNode;
-		newNode->previous_ = head_;
-		tail_ = newNode;
-	} else {
-		Node<T>* last = tail_;
-		last->next_ = newNode;
-		newNode->previous_ = last;
-		tail_ = newNode;
-	}
-
-	++numElements_;
-}
-
-template <typename T> inline
-void List<T>::appendLeft(T node)
-{
-	Node<T>* newNode = new Node<T>(node);
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = head_;
-	} else if (numElements_ == 1) {
-		tail_ = head_;
-		head_ = newNode;
-		head_->next_ = tail_;
-		tail_->previous_ = head_;
-	} else {
-		Node<T>* first = head_;
-		first->previous_ = newNode;
-		newNode->next_ = first;
-		head_ = newNode;
-	}
-
-	++numElements_;
-}
-
-template <typename T> inline
-void List<T>::remove()
-{
-	if (numElements_ == 0)
-		throw IndexOutOfBoundsException(0, std::string("List"));
-
-	// Setting it up like this eliminates duplicate code.
-	Node<T>* newHead = nullptr;
-	if (numElements_ > 1) {
-		newHead = head_->next_;
-	}
-	delete head_;
-	head_ = newHead;
-	head_->previous_ = nullptr;
-	--numElements_;
-}
-
-template <typename T> inline
-void List<T>::remove(std::size_t n)
-{
-	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("List"));
-
-	std::size_t index = n-1;
-	Node<T>* prev = getNode(index);
-	Node<T>* toRemove = prev->next_;
-	Node<T>* after = toRemove->next_;
-	delete toRemove;
-	prev->next_ = after;
-	after->previous_ = prev;
-	--numElements_;
-}
-
-template <typename T> inline
-T List<T>::pop()
-{
-	// Setting it up like this eliminates duplicate code.
-	Node<T>* newHead = nullptr;
-	T value;
-	if (numElements_ > 1) {
-		newHead = head_->next_;
-		value = head_->value_;
-	} else if (numElements_ == 1)
-		value = head_->value_;
-	else
-		throw IndexOutOfBoundsException(0, std::string("List"));
-	
-	delete head_;
-	head_ = newHead;
-	head_->previous_ = nullptr;
-	--numElements_;
-	return value;
-}
-
-template <typename T> inline
-T List<T>::pop(std::size_t n)
-{
-	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("List"));
-
-	std::size_t index = n - 1;
-	Node<T>* prev = getNode(index);
-	Node<T>* toRemove = prev->next_;
-	Node<T>* after = toRemove->next_;
-	T value = toRemove->value_;
-	delete toRemove;
-	prev->next_ = after;
-	after->previous_ = prev;
-	--numElements_;	
-	return value;
-}	
-
-template <typename T> inline
-void List<T>::insert(std::size_t n, T value)
-{
-	if (n > numElements_)
-		throw IndexOutOfBoundsException(n, std::string("List"));
-
-	Node<T>* newNode = new Node<T>(value);
-
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = newNode;
-	} else if (numElements_ == n) {
-		Node<T>* last = tail_;
-		last->next_ = newNode;
-		newNode->previous_ = last;
-		tail_ = newNode;
-	} else if (n == 0) {
-		Node<T>* first = head_;
-		newNode->next_ = first;
-		first->previous_ = newNode;
-		head_ = newNode;
-	} else {
-		std::size_t index = n - 1;
-		Node<T>* prev = getNode(index);
-		Node<T>* toPush = prev->next_;
-
-		prev->next_ = newNode;
-		newNode->previous_ = prev;
-		toPush->previous_ = newNode;
-		newNode->next_ = toPush;
-	}
-	++numElements_;
-}
-
-template <typename T> inline 
-T& List<T>::operator[](std::size_t index)
-{
-	return getNode(index)->value_;
-}
-
-template <typename T> inline 
-const T& List<T>::operator[](std::size_t index) const
-{
-	return cgetNode(index)->value_;
 }
 
 template <typename T> inline std::size_t List<T>::size() const
@@ -383,8 +242,8 @@ template <typename T> inline
 std::ostream& operator<<(std::ostream& str, const List<T>& list)
 {
 	str << "{";
-	for (size_t i = 0; i < list.size(); ++i) {
-		str << list[i];
+	for (ListNode<T>* node : list) {
+		str << *node;
 		if (i != list.size()-1) 
 			str << ", ";
 	}
