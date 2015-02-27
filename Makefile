@@ -26,7 +26,7 @@ TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque map)
 
 
 all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
-	$(CXX) -o all_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
+	$(CXX) -o a_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
 		$(LINKERS)
 
 runtests.o: runtests.cpp

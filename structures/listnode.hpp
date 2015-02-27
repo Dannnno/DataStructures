@@ -11,15 +11,17 @@
 
 
 /**
+ * \brief Base listnode class.  Supports all functionality required by
+ *  	  the List API.
+ */
+template <typename T> struct ListNode;
+
+/**
  * \brief Overloading the << operator.
  */
 template <typename T>
 std::ostream& operator<<(std::ostream& str, const ListNode<T>& node);
 
-/**
- * \brief Base listnode class.  Supports all functionality required by
- *  	  the List API.
- */
 template <typename T>
 struct ListNode {
 public:

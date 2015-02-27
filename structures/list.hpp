@@ -36,16 +36,6 @@ class List
 {
 public:
 	/**
-	 * \brief A default constructor.
-	 */
-	virtual List() = 0;
-
-	/**
-	 * \brief A constructor from an array.
-	 */
-	virtual List(T* arr, std::size_t length) = 0;
-
-	/**
 	 * \brief The destructor.
 	 */
 	virtual ~List() {}
@@ -166,8 +156,8 @@ public:
         virtual const_iterator operator++(int junk) = 0;
         virtual const T& operator*() = 0;
         virtual const T* operator->() = 0;
-        virtual bool operator==(const self_type& rhs) = 0;
-        virtual bool operator!=(const self_type& rhs) = 0;
+        virtual bool operator==(const iterator& rhs) = 0;
+        virtual bool operator!=(const iterator& rhs) = 0;
     };
 
     /**

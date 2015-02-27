@@ -2,8 +2,6 @@
  * \file linkedlist.hpp
  * \author Dan Obermiller
  * \brief Implementation of a singly-linked list.
- * \remarks Uses templates and operator overloading to provide an almost
- * enjoyable interface.
  */
 
 #ifndef LINKEDLIST_HPP
@@ -13,6 +11,8 @@
 #include <string>
 #include <iostream>
 
+#include "listnode.hpp"
+#include "list.hpp"
 #include "../exceptions.hpp"
 
 
@@ -20,17 +20,10 @@
  * \brief A paramaterized singly-linked list
  */
 template <typename T>
-class LinkedList;
-
-/**
- * \brief Overloading the << operator to allow clean string 
- *        representations of the linkedlist.
- */
-template <typename T> 
-std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list);
+class LinkedList : public List;
 
 template <typename T>
-class LinkedList
+class LinkedList : public List
 {
 public:
 
@@ -337,19 +330,6 @@ template <typename T> inline std::size_t LinkedList<T>::size() const
 template <typename T> inline bool LinkedList<T>::isEmpty() const
 {
 	return numElements_ == 0;
-}
-
-template <typename T> inline 
-std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list)
-{
-	str << "{";
-	for (size_t i = 0; i < list.size(); ++i) {
-		str << list[i];
-		if (i != list.size()-1) 
-			str << ", ";
-	}
-	str << "}" << std::endl;
-	return str;
 }
 
 #endif
