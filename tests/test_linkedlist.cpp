@@ -70,7 +70,6 @@ TEST(LinkedListTest, stringLengthOne) {
 	std::string str = stream.str();
 
 	EXPECT_EQ("{1}\n", str);
-	EXPECT_EQ(str.length(), 4);
 }
 
 TEST(LinkedListTest, stringLengthTwo) {
@@ -83,7 +82,6 @@ TEST(LinkedListTest, stringLengthTwo) {
 	std::string str = stream.str();
 
 	EXPECT_EQ("{1, 2}\n", str);
-	EXPECT_EQ(str.length(), 7);
 }
 
 TEST(LinkedListTest, popDefaultEmptyList) {

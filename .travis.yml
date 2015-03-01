@@ -18,7 +18,8 @@ before_install:
  - sudo apt-get install -qq valgrind
  - make all_tests
 script:
- - valgrind --leak-check=full --show-reachable=yes all_tests 
+ - valgrind --leak-check=full --show-reachable=yes ./all_tests 
+ # - all_tests
 notifications:
   recipients:
     - dannnno16@gmail.com
