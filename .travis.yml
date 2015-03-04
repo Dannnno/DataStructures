@@ -16,7 +16,7 @@ before_install:
  - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
  - sudo apt-get install -qq libc6-dbg
  - sudo apt-get install -qq valgrind
- - make all_tests
+ - make tests
 script:
  - valgrind --leak-check=full --show-reachable=yes ./all_tests 
  # - all_tests
