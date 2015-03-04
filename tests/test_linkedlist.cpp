@@ -222,3 +222,145 @@ TEST(LinkedListTest, appendToMany) {
 	EXPECT_EQ(6, list.size());
 	EXPECT_EQ(6, list[5]);
 }
+
+// Don't have the foreach working atm
+TEST(LinkedListTest, DISABLED_forEach) {
+	int initArray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initArray, 5);
+
+	int i = 0;
+	for (auto node : list) {
+		EXPECT_EQ(node.getValue(), initArray[i]);
+		++i;
+	}
+}
+
+TEST(DISABLED_LinkedListTest, sortEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_EQ(list.size(), 0);
+	list.sort();
+	EXPECT_EQ(list.size(), 0);
+}
+
+TEST(DISABLED_LinkedListTest, sortedEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_EQ(list.size(), 0);
+	LinkedList<int> copy = list.sorted();
+	EXPECT_EQ(list, copy);
+	EXPECT_EQ(copy.size(), 0);
+}
+
+TEST(DISABLED_LinkedListTest, sortOneItemList) {
+	LinkedList<int> list;
+	list.append(1);
+
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+	list.sort();
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+}
+
+TEST(DISABLED_LinkedListTest, sortedOneItemList) {
+	LinkedList<int> list;
+	list.append(1);
+
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+	LinkedList<int> copy = list.sorted();
+	EXPECT_EQ(copy.size(), 1);
+	EXPECT_EQ(copy.getHead(), 1);
+	EXPECT_EQ(list, copy);
+}
+
+TEST(DISABLED_LinkedListTest, sortManyItemsList) {
+	int initArray[5] = {3, 2, 5, 1, 7};
+	int sortedArray[5] = {1, 2, 3, 5, 7};
+	LinkedList<int> list(initArray, 5);
+	list.sort();
+
+	EXPECT_EQ(list.size(), 5);
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(sortedArray[i], list[i]);
+	}
+}
+
+TEST(DISABLED_LinkedListTest, sortedManyItemsList) {
+	int initArray[5] = {3, 2, 5, 1, 7};
+	int sortedArray[5] = {1, 2, 3, 5, 7};
+	LinkedList<int> list(initArray, 5);
+	LinkedList<int> copy = list.sorted();
+
+	EXPECT_EQ(list.size(), 5);
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(sortedArray[i], copy[i]);
+	}
+	EXPECT_NE(copy, list);
+}
+
+TEST(DISABLED_LinkedListTest, reverseEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_EQ(list.size(), 0);
+	list.reverse();
+	EXPECT_EQ(list.size(), 0);
+}
+
+TEST(DISABLED_LinkedListTest, reversedEmptyList) {
+	LinkedList<int> list;
+
+	EXPECT_EQ(list.size(), 0);
+	LinkedList<int> copy = list.reversed();
+	EXPECT_EQ(list, copy);
+	EXPECT_EQ(copy.size(), 0);
+}
+
+TEST(DISABLED_LinkedListTest, reverseOneItemList) {
+	LinkedList<int> list;
+	list.append(1);
+
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+	list.reverse();
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+}
+
+TEST(DISABLED_LinkedListTest, reversedOneItemList) {
+	LinkedList<int> list;
+	list.append(1);
+
+	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.getHead(), 1);
+	LinkedList<int> copy = list.reversed();
+	EXPECT_EQ(copy.size(), 1);
+	EXPECT_EQ(copy.getHead(), 1);
+	EXPECT_EQ(list, copy);
+}
+
+TEST(DISABLED_LinkedListTest, reverseManyItemsList) {
+	int initArray[5] = {3, 2, 5, 1, 7};
+	int reversedArray[5] = {7, 1, 5, 2, 3};
+	LinkedList<int> list(initArray, 5);
+	list.reverse();
+
+	EXPECT_EQ(list.size(), 5);
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(reversedArray[i], list[i]);
+	}
+}
+
+TEST(DISABLED_LinkedListTest, reversedManyItemsList) {
+	int initArray[5] = {3, 2, 5, 1, 7};
+	int reversedArray[5] = {7, 1, 5, 2, 3};
+	LinkedList<int> list(initArray, 5);
+	LinkedList<int> copy = list.reversed();
+
+	EXPECT_EQ(list.size(), 5);
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(reversedArray[i], copy[i]);
+	}
+	EXPECT_NE(copy, list);
+}

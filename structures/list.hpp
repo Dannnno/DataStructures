@@ -167,9 +167,9 @@ template <typename T> inline
 std::ostream& operator<<(std::ostream& str, const List<T>& list)
 {
 	str << "{";
-	for (ListNode<T> node : list) {
-		str << node;
-		if (node.getValue() != list.getTail())
+	for (size_t i = 0; i < list.size(); ++i) {
+		str << list[i];
+		if (i != list.size()-1)
 			str << ", ";
 	}
 	str << "}" << std::endl;

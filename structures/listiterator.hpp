@@ -15,12 +15,10 @@
  * \brief Underlying iterator class.
  */
 template <typename T>
-class ListIterator : std::iterator
+class ListIterator : 
+	public std::iterator<std::forward_iterator_tag, T>
 {
 public:
-    
-    typedef std::forward_iterator_tag iterator_category;
-
     /**
      * \brief The default constructor.
      */
@@ -70,10 +68,10 @@ private:
  * \remarks Constant versions of everything provided in ListIterator.
  */
 template <typename T>
-class ConstListIterator : std::iterator
+class ConstListIterator : 
+	public std::iterator<std::forward_iterator_tag, T>
 {
 public:
-    typedef std::forward_iterator_tag iterator_category;
     ConstListIterator() : current_(nullptr) {}
     ConstListIterator(ListNode<T>* node);
     ConstListIterator& operator++();
@@ -167,7 +165,7 @@ template <typename T> inline
 bool ListIterator<T>::operator!=(const ListIterator<T>& rhs) const
 {
 	if (rhs == nullptr)
-		return false;
+		return current_ != nullptr;
 	return current_ != rhs.current_;
 }
 
@@ -175,7 +173,7 @@ template <typename T> inline
 bool ConstListIterator<T>::operator!=(const ConstListIterator<T>& rhs) const
 {
 	if (rhs == nullptr)
-		return false;
+		return current_ != nullptr;
 	return current_ != rhs.current_;
 }
 

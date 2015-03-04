@@ -118,6 +118,16 @@ public:
      */
   	const T& operator[](std::size_t index) const;
 
+  	/**
+  	 * \brief Overloads the equivalence operator.
+  	 */
+  	bool operator==(const LinkedList<T>& rhs) const;
+
+  	/**
+  	 * \brief Overloads the inequivalence operator.
+  	 */
+  	bool operator!=(const LinkedList<T>& rhs) const;
+
     /**
      * \brief Returns the start of the ListIterator<T>.
      */
@@ -219,36 +229,6 @@ template <typename T> inline LinkedList<T>::LinkedList(
 	tail_ = current;
 }
 
-template <typename T> inline T& LinkedList<T>::getHead()
-{
-	return head_->getValue();
-}
-
-template <typename T> inline T& LinkedList<T>::getTail()
-{
-	return tail_->getValue();
-}
-
-template <typename T> inline const T& LinkedList<T>::getHead() const
-{
-	return head_->getValue();
-}
-
-template <typename T> inline const T& LinkedList<T>::getTail() const
-{
-	return tail_->getValue();
-}
-
-template <typename T> inline std::size_t LinkedList<T>::size() const
-{
-	return numElements_;
-}
-
-template <typename T> inline bool LinkedList<T>::isEmpty() const
-{
-	return numElements_ == 0;
-}
-
 template <typename T> inline LinkedList<T>::~LinkedList()
 {
 	ListNode<T>* current = head_;
@@ -259,6 +239,48 @@ template <typename T> inline LinkedList<T>::~LinkedList()
 		delete current;
 		current = next;
 	}
+}
+
+template <typename T> inline T& LinkedList<T>::getHead()
+{
+	if (head_ != nullptr)
+		return head_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+}
+
+template <typename T> inline T& LinkedList<T>::getTail()
+{
+	if (tail_ != nullptr)
+		return tail_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+}
+
+template <typename T> inline const T& LinkedList<T>::getHead() const
+{
+	if (head_ != nullptr)
+		return head_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+}
+
+template <typename T> inline const T& LinkedList<T>::getTail() const
+{
+	if (tail_ != nullptr)
+		return tail_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+}
+
+template <typename T> inline std::size_t LinkedList<T>::size() const
+{
+	return numElements_;
+}
+
+template <typename T> inline bool LinkedList<T>::isEmpty() const
+{
+	return numElements_ == 0;
 }
 
 template <typename T> inline 
@@ -390,6 +412,41 @@ const T& LinkedList<T>::operator[](std::size_t index) const
 	return cGetListNode(index)->getValue();
 }
 
+template <typename T> inline 
+bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const
+{
+	bool sizes = size() == rhs.size();
+	ListNode<T>* lh = head_;
+	ListNode<T>* rh = rhs.head_;
+	if (!sizes)
+		return false;
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		if (lh->getValue() != rh->getValue())
+			return false;
+		lh = lh->getNext();
+		rh = rh->getNext();
+	}
+	return true;
+}
+
+template <typename T> inline 
+bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) const
+{
+	bool sizes = size() == rhs.size();
+	std::size_t numSame = 0;
+	ListNode<T>* lh = head_;
+	ListNode<T>* rh = rhs.head_;
+	if (sizes)
+		return false;
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		if (lh->getValue() == rh->getValue())
+			++numSame;
+		lh = lh->getNext();
+		rh = rh->getNext();
+	}
+	return numSame == numElements_;
+}
+
 template <typename T> inline
 ListIterator<T> LinkedList<T>::begin() 
 {
@@ -415,7 +472,7 @@ ConstListIterator<T> LinkedList<T>::end() const
 }
 
 template <typename T> inline
-void LinkedList<T>::sort() 
+void LinkedList<T>::sort() // Uses a mergesort algorithm
 {
 
 }
@@ -423,7 +480,8 @@ void LinkedList<T>::sort()
 template <typename T> inline
 LinkedList<T> LinkedList<T>::sorted() const
 {
-	return NULL;
+	LinkedList<T> newList;
+	return newList;
 }
 
 template <typename T> inline
@@ -435,7 +493,8 @@ void LinkedList<T>::reverse()
 template <typename T> inline
 LinkedList<T> LinkedList<T>::reversed() const
 {
-	return NULL;
+	LinkedList<T> newList;
+	return newList;
 }
 
 #endif

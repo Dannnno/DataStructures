@@ -1,63 +1,66 @@
+# Directories to search for files
+VPATH = . ./algorithms ./tests ./structures ./obj ./obj/tests
+
 # This is because travis sets this as an environment variable, but my
 # machine doesn't afaik
 ifndef CXX
-    CXX := g++
+	# Checking if either of these commands exists
+	CLANG := $(shell clang++ --version)
+	MINGW := $(shell mingw32-g++ --version)
+
+	# Picking a compiler depending on what is available
+	ifdef CLANG:
+		CXX = clang++
+	else
+		ifdef MINGW
+			CXX = mingw32-g++
+		else
+			CXX = g++
+		endif
+	endif
 endif
 
-LINKERS = -lgtest -fprofile-arcs
-
 # Adapted from http://stackoverflow.com/a/12099167/3076272
-ifneq ($(OS),Windows_NT)
+# Handles specific command differences between operating systems
+ifneq ($(OS), Windows_NT)
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
-        LINKERS += -lpthread
+    	# Must be linked for gtest on linux machines, possibly OSX
+        TEST_LINK = -lpthread
     endif
     REMOVE := rm -f
 else
     REMOVE := del
 endif
 
-CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11 \
-	-fprofile-arcs -ftest-coverage
+# Flags to ensure proper compilation
+CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
+# Flags necessary to run gcov
+COVERAGE := -fprofile-arcs -ftest-coverage
+# Libraries to link for gtest
+TEST_LINK += -lgtest -fprofile-arcs
 
-TESTS = tests/test_%.cpp
-TEST_OBJ = $(TESTS:.cpp=.o)
+# Allows me to minimize code repetition when compiling source files
+TO_TEST := deque linkedlist #mergesort
+TESTS = $(foreach file, $(TO_TEST), tests/test_$(file).cpp)
+TEST_OBJ = $(patsubst %.cpp, obj/%.o, $(patsubst tests/%.cpp, %.cpp, $(TESTS)))
 
-TEST_DEPENDENCIES = $(patsubst %, $(TEST_OBJ), linkedlist deque) 
+# Other things that need to be compiled
+_OTHERS := exceptions runtests #mergesort
+OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
+OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
+tests: $(TEST_OBJ) $(OTHER_OBJ)
+	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
 
-all_tests: $(TEST_DEPENDENCIES) runtests.o exceptions.o
-	$(CXX) -o all_tests $(TEST_DEPENDENCIES) exceptions.o runtests.o \
-		$(LINKERS)
+obj/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 
 
-main : main.o exceptions.o
-	$(CXX) -o main main.o exceptions.o $(LINKERS)
+# runtests.o: runtests.cpp
+# 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c runtests.cpp -o obj/runtests.o
 
-main.o : main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
-
-runtests.o: runtests.cpp
-	$(CXX) $(CXXFLAGS) -c runtests.cpp
-
-# tests/test_%.o: tests/test_%.cpp
-# 	$(CXX) $(CXXFLAGS) -c test_%.cpp
-# 	$(info test_%)
-
-test_linkedlist.o: test_linkedlist.cpp linkedlist.hpp
-	$(CXX) $(CXXFLAGS) -c test_linkedlist.cpp
-
-test_deque.o: test_deque.cpp deque.hpp
-	$(CXX) $(CXXFLAGS) -c test_deque.cpp
-
-exceptions.o: exceptions.cpp exceptions.hpp
-	$(CXX) $(CXXFLAGS) -c exceptions.cpp
-
+# exceptions.o: exceptions.cpp
+# 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c exceptions.cpp -o obj/exceptions.o
 
 clean:
-	FILES := $(wildcard *.o *.exe *.out *.gcno) \
-		$(wildcard tests/*.o tests/*.gcno)
-	$(foreach file,$(FILES),$(REMOVE) file)
-
-commit:
-	git commit -a -m "$m"
-	git push origin master
+	rm -f $(wildcard *.out *.exe obj/*) all_tests
