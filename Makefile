@@ -34,19 +34,19 @@ else
 endif
 
 # Flags to ensure proper compilation
-CXXFLAGS := -g -Wall -Werror -Wextra -pedantic -std=gnu++11
+CXXFLAGS := -g -Wall -Wextra -pedantic -std=gnu++11
 # Flags necessary to run gcov
 COVERAGE := -fprofile-arcs -ftest-coverage
 # Libraries to link for gtest
 TEST_LINK += -lgtest -fprofile-arcs
 
 # Allows me to minimize code repetition when compiling source files
-TO_TEST := deque linkedlist #mergesort
+TO_TEST := deque linkedlist mergesort
 TESTS = $(foreach file, $(TO_TEST), tests/test_$(file).cpp)
 TEST_OBJ = $(patsubst %.cpp, obj/%.o, $(patsubst tests/%.cpp, %.cpp, $(TESTS)))
 
 # Other things that need to be compiled
-_OTHERS := exceptions runtests #mergesort
+_OTHERS := exceptions runtests
 OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
 OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
@@ -56,11 +56,5 @@ tests: $(TEST_OBJ) $(OTHER_OBJ)
 obj/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 
 
-# runtests.o: runtests.cpp
-# 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c runtests.cpp -o obj/runtests.o
-
-# exceptions.o: exceptions.cpp
-# 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c exceptions.cpp -o obj/exceptions.o
-
 clean:
-	rm -f $(wildcard *.out *.exe obj/*) all_tests
+	rm -f $(wildcard *.out *.exe *.gcno *.o *.gcda all_tests)

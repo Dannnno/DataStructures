@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include <cstddef>
 
 #include "gtest/gtest.h"
 
@@ -7,13 +8,16 @@
 #include "../structures/linkedlist.hpp"
 
 
+using std::size_t;
+
 TEST(MergeSortTest, testOneItemArrayInPlace)
 {
 	int array[1] = {1};
 	int sorted[1] = {1};
 	mergesort(array, 1);
 
-	EXPECT_EQ(array, sorted);
+	for (size_t i = 0; i < 1; ++i)
+		EXPECT_EQ(array[i], sorted[i]);
 }
 
 TEST(MergeSortTest, testManyItemArrayInPlace)
@@ -22,7 +26,8 @@ TEST(MergeSortTest, testManyItemArrayInPlace)
 	int sorted[5] = {1, 2, 3, 4, 5};
 	mergesort(array, 5);
 
-	EXPECT_EQ(sorted, array);
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(array[i], sorted[i]);
 }
 
 TEST(MergeSortTest, testOneItemArrayCopy)
@@ -32,7 +37,8 @@ TEST(MergeSortTest, testOneItemArrayCopy)
 	int newArray[1];
 	mergesort(array, 1, newArray);
 
-	EXPECT_EQ(newArray, sorted);
+	for (size_t i = 0; i < 1; ++i)
+		EXPECT_EQ(newArray[i], sorted[i]);
 }
 
 TEST(MergeSortTest, testManyItemArrayCopy)
@@ -42,8 +48,10 @@ TEST(MergeSortTest, testManyItemArrayCopy)
 	int newArray[5];
 	mergesort(array, 5, newArray);
 
-	EXPECT_EQ(sorted, newArray);
-	EXPECT_NE(newArray, array);
+	for (size_t i = 0; i < 1; ++i) {
+		EXPECT_EQ(newArray[i], sorted[i]);
+		EXPECT_NE(newArray[i], array[i]);
+	}
 }
 
 TEST(MergeSortTest, testEmptyListInPlace)

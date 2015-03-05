@@ -1,0 +1,1 @@
+This folder exists to store all compiled object files, dlls, etc, as well as all coverage related files.  This grossly simplifies cleaning up my directories.
