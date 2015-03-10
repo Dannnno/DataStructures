@@ -123,17 +123,4 @@ public:
     virtual void reverse() = 0;
 };
 
-template <typename T> inline 
-std::ostream& operator<<(std::ostream& str, const List<T>& list)
-{
-	str << "{";
-	for (std::size_t i = 0; i < list.size(); ++i) {
-		str << list[i];
-		if (i != list.size()-1)
-			str << ", ";
-	}
-	str << "}" << std::endl;
-	return str;
-}
-
 #endif

@@ -7,14 +7,16 @@
 #include "../exceptions.hpp"
 
 
-TEST(LinkedListTest, constructor) {
+TEST(LinkedListTest, constructor) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	EXPECT_EQ(false, list.isEmpty());
 	EXPECT_EQ(5, list.size());
 }
 
-TEST(LinkedListTest, empty) {
+TEST(LinkedListTest, empty) 
+{
 	LinkedList<int> list1;
 	LinkedList<int> list2;
 	list2.append(1);
@@ -23,7 +25,8 @@ TEST(LinkedListTest, empty) {
 	EXPECT_EQ(false, list2.isEmpty());
 }
 
-TEST(LinkedListTest, size) {
+TEST(LinkedListTest, size) 
+{
 	LinkedList<int> list1;
 	LinkedList<int> list2;
 	list2.append(1);
@@ -33,7 +36,8 @@ TEST(LinkedListTest, size) {
 	EXPECT_EQ(2, list2.size());
 }
 
-TEST(LinkedListTest, LengthOne) {
+TEST(LinkedListTest, LengthOne) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -42,7 +46,8 @@ TEST(LinkedListTest, LengthOne) {
 	EXPECT_EQ(list.getHead(), list.getTail());
 }
 
-TEST(LinkedListTest, LengthTwo) {
+TEST(LinkedListTest, LengthTwo) 
+{
 	LinkedList<int> list;
 	list.append(1);
 	list.append(2);
@@ -52,7 +57,15 @@ TEST(LinkedListTest, LengthTwo) {
 	EXPECT_NE(list.getHead(), list.getTail());	
 }
 
-TEST(LinkedListTest, subscript) {
+TEST(LinkedListTest, subscriptEmptyList) 
+{
+	LinkedList<int> list;
+
+	EXPECT_THROW(list[0], IndexOutOfBoundsException);
+}
+
+TEST(LinkedListTest, subscriptValidList) 
+{
 	LinkedList<int> list;
 	list.append(1);
 	list.append(2);
@@ -61,7 +74,17 @@ TEST(LinkedListTest, subscript) {
 	EXPECT_EQ(2, list[1]);
 }
 
-TEST(LinkedListTest, stringLengthOne) {
+TEST(LinkedListTest, subscriptOutOfBounds)
+{
+	LinkedList<int> list;
+	list.append(1);
+	list.append(2);
+
+	EXPECT_THROW(list[2], IndexOutOfBoundsException);
+}
+
+TEST(LinkedListTest, stringLengthOne) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -72,7 +95,8 @@ TEST(LinkedListTest, stringLengthOne) {
 	EXPECT_EQ("{1}\n", str);
 }
 
-TEST(LinkedListTest, stringLengthTwo) {
+TEST(LinkedListTest, stringLengthTwo) 
+{
 	LinkedList<int> list;
 	list.append(1);
 	list.append(2);
@@ -84,19 +108,22 @@ TEST(LinkedListTest, stringLengthTwo) {
 	EXPECT_EQ("{1, 2}\n", str);
 }
 
-TEST(LinkedListTest, popDefaultEmptyList) {
+TEST(LinkedListTest, popDefaultEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_THROW(list.pop(), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, popSpecificEmptyList) {
+TEST(LinkedListTest, popSpecificEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_THROW(list.pop(1), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, popDefaultNonEmptyList) {
+TEST(LinkedListTest, popDefaultNonEmptyList) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
@@ -104,7 +131,8 @@ TEST(LinkedListTest, popDefaultNonEmptyList) {
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, popSpecificNonEmptyList) {
+TEST(LinkedListTest, popSpecificNonEmptyList) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
@@ -112,33 +140,38 @@ TEST(LinkedListTest, popSpecificNonEmptyList) {
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, popOutOfRange) {
+TEST(LinkedListTest, popOutOfRange) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
 	EXPECT_THROW(list.pop(5), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeDefaultEmptyList) {
+TEST(LinkedListTest, removeDefaultEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_THROW(list.remove(), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeSpecificEmptyList) {
+TEST(LinkedListTest, removeSpecificEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_THROW(list.remove(1), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, removeDefaultNonEmptyList) {
+TEST(LinkedListTest, removeDefaultNonEmptyList) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	list.remove();
 	EXPECT_EQ(4, list.size());
 }
 
-TEST(LinkedListTest, removeSpecificNonEmptyList) {
+TEST(LinkedListTest, removeSpecificNonEmptyList) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	list.remove(2);
@@ -146,7 +179,8 @@ TEST(LinkedListTest, removeSpecificNonEmptyList) {
 	EXPECT_EQ(4, list[2]);
 }
 
-TEST(LinkedListTest, removeOutOfRange) {
+TEST(LinkedListTest, removeOutOfRange) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 
@@ -154,7 +188,8 @@ TEST(LinkedListTest, removeOutOfRange) {
 }
 
 
-TEST(LinkedListTest, insertEmpty) {
+TEST(LinkedListTest, insertEmpty) 
+{
 	LinkedList<int> list;
 	list.insert(0, 1);
 
@@ -162,13 +197,15 @@ TEST(LinkedListTest, insertEmpty) {
 	EXPECT_EQ(1, list[0]);
 }
 
-TEST(LinkedListTest, insertEmptyBad) {
+TEST(LinkedListTest, insertEmptyBad) 
+{
 	LinkedList<int> list;
 
 	EXPECT_THROW(list.insert(1, 1), IndexOutOfBoundsException);
 }
 
-TEST(LinkedListTest, insertSingle) {
+TEST(LinkedListTest, insertSingle) 
+{
 	LinkedList<int> list;
 	list.append(1);
 	list.insert(0, 2);
@@ -177,7 +214,8 @@ TEST(LinkedListTest, insertSingle) {
 	EXPECT_EQ(2, list[0]);
 }
 
-TEST(LinkedListTest, insertMany) {
+TEST(LinkedListTest, insertMany) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	list.insert(3, 7);
@@ -188,7 +226,8 @@ TEST(LinkedListTest, insertMany) {
 	EXPECT_EQ(4, list[4]);
 }
 
-TEST(LinkedListTest, insertEnd) {
+TEST(LinkedListTest, insertEnd) 
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	list.insert(5, 7);
@@ -197,7 +236,8 @@ TEST(LinkedListTest, insertEnd) {
 	EXPECT_EQ(7, list[5]);
 }
 
-TEST(LinkedListTest, appendToEmpty) {
+TEST(LinkedListTest, appendToEmpty) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -205,7 +245,8 @@ TEST(LinkedListTest, appendToEmpty) {
 	EXPECT_EQ(1, list[0]);
 }
 
-TEST(LinkedListTest, appendToOne) {
+TEST(LinkedListTest, appendToOne) 
+{
 	LinkedList<int> list;
 	list.append(1);
 	list.append(2);
@@ -214,7 +255,8 @@ TEST(LinkedListTest, appendToOne) {
 	EXPECT_EQ(2, list[1]);
 }
 
-TEST(LinkedListTest, appendToMany) {
+TEST(LinkedListTest, appendToMany)
+{
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
 	list.append(6);
@@ -224,7 +266,8 @@ TEST(LinkedListTest, appendToMany) {
 }
 
 // Don't have the foreach working atm
-TEST(LinkedListTest, DISABLED_forEach) {
+TEST(LinkedListTest, forEach) 
+{
 	int initArray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initArray, 5);
 
@@ -235,7 +278,8 @@ TEST(LinkedListTest, DISABLED_forEach) {
 	}
 }
 
-TEST(DISABLED_LinkedListTest, sortEmptyList) {
+TEST(DISABLED_LinkedListTest, sortEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_EQ(list.size(), 0);
@@ -243,7 +287,8 @@ TEST(DISABLED_LinkedListTest, sortEmptyList) {
 	EXPECT_EQ(list.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, sortedEmptyList) {
+TEST(DISABLED_LinkedListTest, sortedEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_EQ(list.size(), 0);
@@ -252,7 +297,8 @@ TEST(DISABLED_LinkedListTest, sortedEmptyList) {
 	EXPECT_EQ(copy.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, sortOneItemList) {
+TEST(DISABLED_LinkedListTest, sortOneItemList) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -263,7 +309,8 @@ TEST(DISABLED_LinkedListTest, sortOneItemList) {
 	EXPECT_EQ(list.getHead(), 1);
 }
 
-TEST(DISABLED_LinkedListTest, sortedOneItemList) {
+TEST(DISABLED_LinkedListTest, sortedOneItemList) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -275,7 +322,8 @@ TEST(DISABLED_LinkedListTest, sortedOneItemList) {
 	EXPECT_EQ(list, copy);
 }
 
-TEST(DISABLED_LinkedListTest, sortManyItemsList) {
+TEST(DISABLED_LinkedListTest, sortManyItemsList) 
+{
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int sortedArray[5] = {1, 2, 3, 5, 7};
 	LinkedList<int> list(initArray, 5);
@@ -287,7 +335,8 @@ TEST(DISABLED_LinkedListTest, sortManyItemsList) {
 	}
 }
 
-TEST(DISABLED_LinkedListTest, sortedManyItemsList) {
+TEST(DISABLED_LinkedListTest, sortedManyItemsList) 
+{
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int sortedArray[5] = {1, 2, 3, 5, 7};
 	LinkedList<int> list(initArray, 5);
@@ -300,7 +349,8 @@ TEST(DISABLED_LinkedListTest, sortedManyItemsList) {
 	EXPECT_NE(copy, list);
 }
 
-TEST(DISABLED_LinkedListTest, reverseEmptyList) {
+TEST(DISABLED_LinkedListTest, reverseEmptyList) 
+{
 	LinkedList<int> list;
 
 	EXPECT_EQ(list.size(), 0);
@@ -308,7 +358,8 @@ TEST(DISABLED_LinkedListTest, reverseEmptyList) {
 	EXPECT_EQ(list.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, reversedEmptyList) {
+TEST(DISABLED_LinkedListTest, reversedEmptyList)
+{
 	LinkedList<int> list;
 
 	EXPECT_EQ(list.size(), 0);
@@ -317,7 +368,8 @@ TEST(DISABLED_LinkedListTest, reversedEmptyList) {
 	EXPECT_EQ(copy.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, reverseOneItemList) {
+TEST(DISABLED_LinkedListTest, reverseOneItemList) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -328,7 +380,8 @@ TEST(DISABLED_LinkedListTest, reverseOneItemList) {
 	EXPECT_EQ(list.getHead(), 1);
 }
 
-TEST(DISABLED_LinkedListTest, reversedOneItemList) {
+TEST(DISABLED_LinkedListTest, reversedOneItemList) 
+{
 	LinkedList<int> list;
 	list.append(1);
 
@@ -340,7 +393,8 @@ TEST(DISABLED_LinkedListTest, reversedOneItemList) {
 	EXPECT_EQ(list, copy);
 }
 
-TEST(DISABLED_LinkedListTest, reverseManyItemsList) {
+TEST(DISABLED_LinkedListTest, reverseManyItemsList) 
+{
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int reversedArray[5] = {7, 1, 5, 2, 3};
 	LinkedList<int> list(initArray, 5);
@@ -352,7 +406,8 @@ TEST(DISABLED_LinkedListTest, reverseManyItemsList) {
 	}
 }
 
-TEST(DISABLED_LinkedListTest, reversedManyItemsList) {
+TEST(DISABLED_LinkedListTest, reversedManyItemsList) 
+{
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int reversedArray[5] = {7, 1, 5, 2, 3};
 	LinkedList<int> list(initArray, 5);

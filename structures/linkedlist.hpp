@@ -298,10 +298,14 @@ private:
 	{
 		if (index >= numElements_)
 			throw IndexOutOfBoundsException(index, "LinkedList");
+
 		std::size_t i = 0;
 		ListNode* current = head_;
-		while (i < index)
+
+		while (i < index) {
 			current = current->next_;
+			++i;
+		}
 		return current;
 	}
 
@@ -669,5 +673,20 @@ bool LinkedList<T>::const_iterator::operator!=(
 {
 	return !(*this == rhs);
 } 
+
+template <typename T> inline 
+std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list)
+{
+	str << "{";
+	std::size_t i = 0;
+	for (auto node : list) {
+		str << node;
+		if (i != list.size()-1)
+			str << ", ";
+		++i;
+	}
+	str << "}" << std::endl;
+	return str;
+}
 
 #endif
