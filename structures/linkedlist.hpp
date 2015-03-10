@@ -12,9 +12,7 @@
 #include <iostream>
 #include <iterator>
 
-#include "listnode.hpp"
 #include "list.hpp"
-#include "listiterator.hpp"
 #include "../exceptions.hpp"
 
 
@@ -22,11 +20,23 @@
  * \brief A paramaterized singly-linked list
  */
 template <typename T>
-class LinkedList;
-
-template <typename T>
 class LinkedList : public List<T>
 {
+private:
+	/**
+	 * \brief Iterator for a linkedlist.
+	 */
+	template <typename V> class Iterator;
+
+	/**
+	 * \brief Constant iterator for a linkedlist.
+	 */
+	template <typename V> class ConstIterator;
+
+	/**
+	 * \brief Node of a linkedlist
+	 */
+	template <typename V> struct ListNode;
 public:
 
 	/**
@@ -128,25 +138,28 @@ public:
   	 */
   	bool operator!=(const LinkedList<T>& rhs) const;
 
+  	typedef Iterator<T> iterator;
+  	typedef ConstIterator<T> const_iterator;
+
     /**
      * \brief Returns the start of the ListIterator<T>.
      */
-	ListIterator<T> begin();
+	iterator begin();
 
 	/**
 	 * \brief Returns the end of the ListIterator<T>.
 	 */
-    ListIterator<T> end();
+    iterator end();
 
     /** 
      * \brief Returns a costant version of the ListIterator<T> (from the start)
      */
-    ConstListIterator<T> begin() const;
+    const_iterator begin() const;
 
     /**
      * \brief Returns a constant version of the ListIterator<T> (at the end).
      */
-    ConstListIterator<T> end() const;
+    const_iterator end() const;
 
     /**
      * \brief Sorts the current list.
@@ -171,59 +184,150 @@ public:
     LinkedList<T> reversed() const;
 
 private:
+	template <typename V>
+	class Iterator : public std::iterator<std::forward_iterator_tag, T>
+	{
+	public:
+	    /**
+		 * \brief Prefix increment operator overloading.
+		 */
+		Iterator<T>& operator++();
+
+		/**
+		 * \brief Postfix increment operator overloading.
+		 */
+		Iterator<T> operator++(int) const;
+
+		/**
+		 * \brief Dereferencing operator overloading.
+		 */
+		const T& operator*() const;
+
+		/**
+		 * \brief Member access operator overriding.
+		 */
+		const T* operator->() const;
+
+		/**
+		 * \brief Equality operator overriding.
+		 */
+		bool operator==(const Iterator<T>& rhs) const;
+
+		/**
+		 * \brief Inequality operator overriding.
+		 */
+		bool operator!=(const Iterator<T>& rhs) const;
+
+	private:
+		friend class LinkedList;
+		/**
+	     * \brief The default constructor.
+	     */
+	    Iterator() = delete;
+	    /**
+	     * \brief All iterators should have a current node.
+	     */
+	    Iterator(ListNode<T>* node) : current_{node}
+	    {
+	    }
+		
+		ListNode<T>* current_;
+	};
+
+	template <typename V>
+	class ConstIterator : public std::iterator<std::forward_iterator_tag, T>
+	{
+	public:
+	    /**
+		 * \brief Prefix increment operator overloading.
+		 */
+		ConstIterator<T>& operator++();
+
+		/**
+		 * \brief Postfix increment operator overloading.
+		 */
+		ConstIterator<T> operator++(int) const;
+
+		/**
+		 * \brief Dereferencing operator overloading.
+		 */
+		const T& operator*() const;
+
+		/**
+		 * \brief Member access operator overriding.
+		 */
+		const T* operator->() const;
+
+		/**
+		 * \brief Equality operator overriding.
+		 */
+		bool operator==(const ConstIterator<T>& rhs) const;
+
+		/**
+		 * \brief Inequality operator overriding.
+		 */
+		bool operator!=(const ConstIterator<T>& rhs) const;
+
+	private:
+		friend class LinkedList;
+		/**
+	     * \brief The default constructor.
+	     */
+	    ConstIterator() = delete;
+	    /**
+	     * \brief All iterators should have a current node.
+	     */
+	    ConstIterator(ListNode<T>* node) : current_{node}
+	    {
+	    }
+		
+		ListNode<T>* current_;
+	};
+
+	/**
+	 * \brief Node of a linkedlist
+	 */
+	template <typename V>
+	struct ListNode
+	{
+		T value_;
+		ListNode<T>* next_;
+	};
+
+	/**
+	 * \brief Gets a list node at the given index
+	 */
+	ListNode<T>* getListNode(std::size_t index) const
+	{
+		if (index >= numElements_)
+			throw IndexOutOfBoundsException(index, "LinkedList");
+		std::size_t i = 0;
+		ListNode<T>* current = head_;
+		while (i < index)
+			current = current->next_;
+		return current;
+	}
+
 	std::size_t numElements_;
 	ListNode<T>* head_;
 	ListNode<T>* tail_;
-
-	/**
-	 * \brief getListNodes the *node*, not the *value* at the given index.
-	 */
-	ListNode<T>* getListNode(std::size_t& index)
-	{
-		ListNode<T>* current = head_;
-		ListNode<T>* next = nullptr;
-
-		for (size_t i = 0; i < index; ++i) {
-			next = current->getNext();
-			current = next;
-		}
-
-		return current;
-	}
-
-	/**
-	 * \brief Constant version of getListNode.
-	 */	
-	ListNode<T>* cGetListNode(const std::size_t& index) const
-	{
-		ListNode<T>* current = head_;
-		ListNode<T>* next = nullptr;
-
-		for (size_t i = 0; i < index; ++i) {
-			next = current->getNext();
-			current = next;
-		}
-
-		return current;
-	}
 };
 
 
 template <typename T> inline LinkedList<T>::LinkedList() :
-	numElements_(0), head_(nullptr), tail_(nullptr) {
+	numElements_{0}, head_{nullptr}, tail_{nullptr} {
 }
 
 template <typename T> inline LinkedList<T>::LinkedList(
 	T* arr, std::size_t length) : 
-		numElements_(length), head_(nullptr), tail_(nullptr) {
-	head_ = new ListNode<T>(arr[0]);
-	ListNode<T>* current = nullptr;
-	ListNode<T>* next = nullptr;
-	current = head_;
+		numElements_{length}, head_{new ListNode<T>{arr[0], nullptr}} {
+
+	ListNode<T>* current{head_};
+	ListNode<T>* next = new ListNode<T>{0, nullptr};
 
 	for (std::size_t i = 1; i < length; ++i) {
-		next = new ListNode<T>(arr[i]);
-		current->setNext(next);
+		next = new ListNode<T>{arr[i], nullptr};
+		current->next_ = next;
 		current = next;
 	}
 	tail_ = current;
@@ -235,7 +339,7 @@ template <typename T> inline LinkedList<T>::~LinkedList()
 	ListNode<T>* next = nullptr;
 
 	for (std::size_t i = 0; i < numElements_; ++i) {
-		next = current->getNext();
+		next = current->next_;
 		delete current;
 		current = next;
 	}
@@ -244,33 +348,33 @@ template <typename T> inline LinkedList<T>::~LinkedList()
 template <typename T> inline T& LinkedList<T>::getHead()
 {
 	if (head_ != nullptr)
-		return head_->getValue();
+		return head_->value_;
 	else
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 }
 
 template <typename T> inline T& LinkedList<T>::getTail()
 {
 	if (tail_ != nullptr)
-		return tail_->getValue();
+		return tail_->value_;
 	else
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 }
 
 template <typename T> inline const T& LinkedList<T>::getHead() const
 {
 	if (head_ != nullptr)
-		return head_->getValue();
+		return head_->value_;
 	else
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 }
 
 template <typename T> inline const T& LinkedList<T>::getTail() const
 {
 	if (tail_ != nullptr)
-		return tail_->getValue();
+		return tail_->value_;
 	else
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 }
 
 template <typename T> inline std::size_t LinkedList<T>::size() const
@@ -286,16 +390,16 @@ template <typename T> inline bool LinkedList<T>::isEmpty() const
 template <typename T> inline 
 void LinkedList<T>::append(T node)
 {
-	ListNode<T>* newListNode = new ListNode<T>(node);
+	ListNode<T>* newListNode = new ListNode<T>{node, nullptr};
 	if (numElements_ == 0) {
 		head_ = newListNode;
 		tail_ = head_;
 	} else if (numElements_ == 1) {
-		head_->setNext(newListNode);
+		head_->next_ = newListNode;
 		tail_ = newListNode;
 	} else {
 		ListNode<T>* last = tail_;
-		last->setNext(newListNode);
+		last->next_ = newListNode;
 		tail_ = newListNode;
 	}
 
@@ -306,12 +410,12 @@ template <typename T> inline
 void LinkedList<T>::remove()
 {
 	if (numElements_ == 0)
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 
 	// Setting it up like this eliminates duplicate code.
 	ListNode<T>* newHead = nullptr;
 	if (numElements_ > 1) {
-		newHead = head_->getNext();
+		newHead = head_->next_;
 	}
 	delete head_;
 	head_ = newHead;
@@ -322,14 +426,14 @@ template <typename T> inline
 void LinkedList<T>::remove(std::size_t n)
 {
 	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(n, "LinkedList");
 
 	std::size_t index = n-1;
 	ListNode<T>* prev = getListNode(index);
-	ListNode<T>* toRemove = prev->getNext();
-	ListNode<T>* after = toRemove->getNext();
+	ListNode<T>* toRemove = prev->next_;
+	ListNode<T>* after = toRemove->next_;
 	delete toRemove;
-	prev->setNext(after);
+	prev->next_ = after;
 	--numElements_;
 }
 
@@ -340,12 +444,12 @@ T LinkedList<T>::pop()
 	ListNode<T>* newHead = nullptr;
 	T value;
 	if (numElements_ > 1) {
-		newHead = head_->getNext();
-		value = head_->getValue();
+		newHead = head_->next_;
+		value = head_->value_;
 	} else if (numElements_ == 1)
-		value = head_->getValue();
+		value = head_->value_;
 	else 
-		throw IndexOutOfBoundsException(0, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(0, "LinkedList");
 	
 	delete head_;
 	head_ = newHead;
@@ -357,15 +461,15 @@ template <typename T> inline
 T LinkedList<T>::pop(std::size_t n)
 {
 	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("LinkedList"));
+		throw IndexOutOfBoundsException(n, "LinkedList");
 
 	std::size_t index = n-1;
 	ListNode<T>* prev = getListNode(index);
-	ListNode<T>* toRemove = prev->getNext();
-	ListNode<T>* after = toRemove->getNext();
-	T value = toRemove->getValue();
+	ListNode<T>* toRemove = prev->next_;
+	ListNode<T>* after = toRemove->next_;
+	T value = toRemove->value_;
 	delete toRemove;
-	prev->setNext(after);
+	prev->next_ = after;
 	--numElements_;	
 	return value;
 }
@@ -374,28 +478,26 @@ template <typename T> inline
 void LinkedList<T>::insert(std::size_t n, T value)
 {
 	if (n > numElements_)
-		throw IndexOutOfBoundsException(n, std::string("Deque"));
+		throw IndexOutOfBoundsException(n, "LinkedList");
 
-	ListNode<T>* newListNode = new ListNode<T>(value);
+	ListNode<T>* newListNode = new ListNode<T>{value, nullptr};
 
 	if (numElements_ == 0) {
 		head_ = newListNode;
 		tail_ = newListNode;
 	} else if (numElements_ == n) {
-		ListNode<T>* last = tail_;
-		last->setNext(newListNode);
+		tail_->next_ = newListNode;
 		tail_ = newListNode;
 	} else if (n == 0) {
-		ListNode<T>* first = head_;
-		newListNode->setNext(first);
+		newListNode->next_ = head_;
 		head_ = newListNode;
 	} else {
 		std::size_t index = n - 1;
 		ListNode<T>* prev = getListNode(index);
-		ListNode<T>* toPush = prev->getNext();
+		ListNode<T>* toPush = prev->next_;
 		
-		prev->setNext(newListNode);
-		newListNode->setNext(toPush);
+		prev->next_ = newListNode;
+		newListNode->next_ = toPush;
 	}
 	++numElements_;
 }
@@ -403,28 +505,31 @@ void LinkedList<T>::insert(std::size_t n, T value)
 template <typename T> inline 
 T& LinkedList<T>::operator[](std::size_t index)
 {
-	return getListNode(index)->getValue();
+	return getListNode(index)->value_;
 }
 
 template <typename T> inline 
 const T& LinkedList<T>::operator[](std::size_t index) const
 {
-	return cGetListNode(index)->getValue();
+	return getListNode(index)->value_;
 }
 
 template <typename T> inline 
 bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const
 {
 	bool sizes = size() == rhs.size();
-	ListNode<T>* lh = head_;
-	ListNode<T>* rh = rhs.head_;
+
 	if (!sizes)
 		return false;
+
+	ListNode<T>* lh = head_;
+	ListNode<T>* rh = rhs.head_;
+
 	for (std::size_t i = 0; i < numElements_; ++i) {
-		if (lh->getValue() != rh->getValue())
+		if (lh->value_ != rh->value_)
 			return false;
-		lh = lh->getNext();
-		rh = rh->getNext();
+		lh = lh->next_;
+		rh = rh->next_;
 	}
 	return true;
 }
@@ -432,43 +537,31 @@ bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const
 template <typename T> inline 
 bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) const
 {
-	bool sizes = size() == rhs.size();
-	std::size_t numSame = 0;
-	ListNode<T>* lh = head_;
-	ListNode<T>* rh = rhs.head_;
-	if (sizes)
-		return false;
-	for (std::size_t i = 0; i < numElements_; ++i) {
-		if (lh->getValue() == rh->getValue())
-			++numSame;
-		lh = lh->getNext();
-		rh = rh->getNext();
-	}
-	return numSame == numElements_;
+	return !(*this == rhs);
 }
 
 template <typename T> inline
-ListIterator<T> LinkedList<T>::begin() 
+typename LinkedList<T>::iterator LinkedList<T>::begin() 
 {
-	return ListIterator<T>(head_);	
+	return iterator{head_};	
 }
 
 template <typename T> inline
-ListIterator<T> LinkedList<T>::end()
+typename LinkedList<T>::iterator LinkedList<T>::end()
 {
-	return ListIterator<T>(nullptr);
+	return Iterator<T>{nullptr};
 }
 
 template <typename T> inline
-ConstListIterator<T> LinkedList<T>::begin() const 
+typename LinkedList<T>::const_iterator LinkedList<T>::begin() const 
 {
-	return ConstListIterator<T>(head_);
+	return ConstIterator<T>{head_};
 }
 
 template <typename T> inline
-ConstListIterator<T> LinkedList<T>::end() const
+typename LinkedList<T>::const_iterator LinkedList<T>::end() const
 {
-	return ConstListIterator<T>(nullptr);
+	return ConstIterator<T>{nullptr};
 }
 
 template <typename T> inline
@@ -496,5 +589,86 @@ LinkedList<T> LinkedList<T>::reversed() const
 	LinkedList<T> newList;
 	return newList;
 }
+
+template <typename T> inline
+typename LinkedList<T>::iterator& LinkedList<T>::iterator::operator++()
+{
+	current_ = current_->next_;
+	return *this;
+}
+
+template <typename T> inline
+typename LinkedList<T>::const_iterator& 
+LinkedList<T>::const_iterator::operator++()
+{
+	current_ = current_->next_;
+	return *this;
+}
+
+template <typename T> inline
+typename LinkedList<T>::iterator LinkedList<T>::iterator::operator++(int) const
+{
+    auto old = current_;
+    current_ = current_->next_;
+    return Iterator<T>{old};
+}
+
+template <typename T> inline
+typename LinkedList<T>::const_iterator 
+LinkedList<T>::const_iterator::operator++(int) const
+{
+    auto old = current_;
+    current_ = current_->next_;
+    return Iterator<T>{old};
+}
+
+template <typename T> inline
+const T& LinkedList<T>::iterator::operator*() const
+{
+	return current_->value_;
+}
+
+template <typename T> inline
+const T& LinkedList<T>::const_iterator::operator*() const
+{
+	return current_->value_;
+}
+
+template <typename T> inline
+const T* LinkedList<T>::iterator::operator->() const
+{
+	return current_->value_;
+}
+
+template <typename T> inline
+const T* LinkedList<T>::const_iterator::operator->() const
+{
+	return current_->value_;
+}
+
+template <typename T> inline
+bool LinkedList<T>::iterator::operator==(const iterator<T>& rhs) const
+{
+
+} 
+
+template <typename T> inline
+bool LinkedList<T>::const_iterator::operator==(const const_iterator<T>& rhs) const
+{
+
+} 
+
+template <typename T> inline
+bool LinkedList<T>::iterator::operator!=(const iterator<T>& rhs) const
+{
+	return !(*this == rhs);
+} 
+
+template <typename T> inline
+bool LinkedList<T>::const_iterator::operator!=(
+	const const_iterator<T>& rhs) const
+{
+	return !(*this == rhs);
+} 
 
 #endif

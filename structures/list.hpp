@@ -12,13 +12,11 @@
 #include <iostream>
 #include <iterator>
 
-#include "listnode.hpp"
-#include "listiterator.hpp"
 #include "../exceptions.hpp"
 
 
 /**
- * \brief A paramaterized doubly linked list
+ * \brief Abstract base class for list types.
  */
 template <typename T>
 class List;
@@ -30,7 +28,6 @@ class List;
  */
 template <typename T>
 std::ostream& operator<<(std::ostream& str, const List<T>& list);
-
 
 template <typename T>
 class List
@@ -116,58 +113,21 @@ public:
 	virtual bool isEmpty() const = 0;
 
     /**
-     * \brief Returns the start of the iterator.
-     */
-	virtual ListIterator<T> begin() = 0;
-
-	/**
-	 * \brief Returns the end of the iterator.
-	 */
-    virtual ListIterator<T> end() = 0;
-
-    /** 
-     * \brief Returns a constant version of the iterator (from the start)
-     */
-    virtual ConstListIterator<T> begin() const = 0;
-
-    /**
-     * \brief Returns a constant version of the iterator (at the end).
-     */
-    virtual ConstListIterator<T> end() const = 0;
-
-    /**
      * \brief Sorts the current list.
      */
     virtual void sort() = 0;
 
     /**
-     * \brief Returns a copy of the list in sorted order.
-     * \post The original list is unchanged.
-     */
-    // virtual List<T> sorted() const = 0;
-
-    /**
      * \brief Reverses the order of the list.
      */
     virtual void reverse() = 0;
-
-    /**
-     * \brief Returns a copy of the list, reversed.
-     * \post The original list is unchanged.
-     */
-    // virtual List<T> reversed() const = 0;
-
-private:
-	std::size_t numElements_;
-	ListNode<T>* head_;
-	ListNode<T>* tail_;
 };
 
 template <typename T> inline 
 std::ostream& operator<<(std::ostream& str, const List<T>& list)
 {
 	str << "{";
-	for (size_t i = 0; i < list.size(); ++i) {
+	for (std::size_t i = 0; i < list.size(); ++i) {
 		str << list[i];
 		if (i != list.size()-1)
 			str << ", ";

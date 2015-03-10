@@ -230,7 +230,7 @@ TEST(LinkedListTest, DISABLED_forEach) {
 
 	int i = 0;
 	for (auto node : list) {
-		EXPECT_EQ(node.getValue(), initArray[i]);
+		EXPECT_EQ(node, initArray[i]);
 		++i;
 	}
 }

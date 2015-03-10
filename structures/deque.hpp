@@ -14,24 +14,16 @@
 #include <iostream>
 
 #include "../exceptions.hpp"
+#include "listnode.hpp"
+#include "listiterator.hpp"
+#include "list.hpp"
 
 
-template <typename T>
-class Deque;
-
-/**
- * \brief Overloading the << operator to allow clean string 
- *        representations of the deque.
- */
-template <typename T> 
-std::ostream& operator<<(std::ostream& str, const Deque<T>& list);
-
-
-template <typename T>
 /**
  * \brief A paramaterized doubly linked list
  */
-class Deque
+template <typename T>
+class Deque : public List<T>
 {
 public:
 
@@ -50,15 +42,36 @@ public:
 	 */
 	~Deque();
 
+
 	/**
 	 * \brief The head (first item) of the list.
 	 */
 	T& getHead();
 
 	/**
+	 * \brief Constant version of getHead()
+	 */
+	const T& getHead() const;
+
+	/**
 	 * \brief The tail (last item) of the list.
 	 */
 	T& getTail();
+
+	/**
+	 * \brief Constant version of getTail()
+	 */
+	const T& getTail() const;
+
+	/**
+  	 * \brief Returns the size of the list
+  	 */
+  	std::size_t size() const;
+
+  	/**
+  	 * \brief Returns whether or not the list is empty.
+  	 */
+	bool isEmpty() const;
 
 	/**
 	 * \brief Adds a node to the end of the list.
@@ -68,7 +81,7 @@ public:
 	void append(T value);
 
 	/**
-	 * \brief Adds a node to the start of a list.
+	 * \brief Adds a node to the start of the list.
 	 */
 	void appendLeft(T value);
 
@@ -110,40 +123,72 @@ public:
   	const T& operator[](std::size_t index) const;
 
   	/**
-  	 * \brief Returns the size of the list
+  	 * \brief Overloads the equivalence operator.
   	 */
-  	std::size_t size() const;
+  	bool operator==(const Deque<T>& rhs) const;
 
   	/**
-  	 * \brief Returns whether or not the list is empty.
+  	 * \brief Overloads the inequivalence operator.
   	 */
-	bool isEmpty() const;
+  	bool operator!=(const Deque<T>& rhs) const;
+
+    /**
+     * \brief Returns the start of the ListIterator<T>.
+     */
+	ListIterator<T> begin();
+
+	/**
+	 * \brief Returns the end of the ListIterator<T>.
+	 */
+    ListIterator<T> end();
+
+    /** 
+     * \brief Returns a costant version of the ListIterator<T> (from the start)
+     */
+    ConstListIterator<T> begin() const;
+
+    /**
+     * \brief Returns a constant version of the ListIterator<T> (at the end).
+     */
+    ConstListIterator<T> end() const;
+
+    /**
+     * \brief Sorts the current list.
+     */
+    void sort();
+
+    /**
+     * \brief Returns a copy of the list in sorted order.
+     * \post The original list is unchanged.
+     */
+    Deque<T> sorted() const;
+
+    /**
+     * \brief Reverses the order of the list.
+     */
+    void reverse();
+
+    /**
+     * \brief Returns a copy of the list, reversed.
+     * \post The original list is unchanged.
+     */
+    Deque<T> reversed() const;
 
 private:
-	template <typename TYPE> struct Node 
-	{
-		TYPE value_;
-		Node<TYPE>* previous_;
-		Node<TYPE>* next_;
-		Node() = delete;
-		Node(TYPE value) : 
-			value_(value), previous_(nullptr), next_(nullptr) {}
-	};
-
 	std::size_t numElements_;
-	Node<T>* head_;
-	Node<T>* tail_;
+	ListNode<T>* head_;
+	ListNode<T>* tail_;
 
 	/**
 	 * \brief getNodes the *node*, not the *value* at the given index.
 	 */
-	Node<T>* getNode(std::size_t& index)
+	ListNode<T>* getListNode(std::size_t& index)
 	{
-		Node<T>* current = head_;
-		Node<T>* next = nullptr;
+		ListNode<T>* current = head_;
+		ListNode<T>* next = nullptr;
 
 		for (size_t i = 0; i < index; ++i) {
-			next = current->next_;
+			next = current->getNext();
 			current = next;
 		}
 
@@ -153,13 +198,13 @@ private:
 	/**
 	 * \brief Constant version of getNode.
 	 */
-	Node<T>* cgetNode(const std::size_t& index) const
+	ListNode<T>* cGetListNode(const std::size_t& index) const
 	{
-		Node<T>* current = head_;
-		Node<T>* next = nullptr;
+		ListNode<T>* current = head_;
+		ListNode<T>* next = nullptr;
 
 		for (size_t i = 0; i < index; ++i) {
-			next = current->next_;
+			next = current->getNext();
 			current = next;
 		}
 
@@ -175,30 +220,31 @@ template <typename T> inline Deque<T>::Deque() :
 template <typename T> inline Deque<T>::Deque(
 	T* arr, std::size_t length) : 
 		numElements_(length), head_(nullptr), tail_(nullptr) {
-	head_ = new Node<T>(arr[0]);
 
-	Node<T>* current = nullptr;
-	Node<T>* next = nullptr;
-	Node<T>* previous = nullptr;
+	head_ = new ListNode<T>(arr[0]);
+	ListNode<T>* current = head_;
+	ListNode<T>* next = nullptr;
+	ListNode<T>* previous = nullptr;
 
-	current = head_;
 	for (std::size_t i = 1; i < length; ++i) {
-		next = new Node<T>(arr[i]);
-		current->next_ = next;
-		current->previous_ = previous;
+		next = new ListNode<T>(arr[i]);
+		current->setNext(next);
+		current->setPrevious(previous);
+		if (previous != nullptr)
+			previous->setNext(current);
 		previous = current;
 		current = next;
 	}
 	tail_ = current;
-	tail_->previous_ = previous;
 }
 
 template <typename T> inline Deque<T>::~Deque()
 {
-	Node<T>* current = head_;
-	Node<T>* next = nullptr;
-	while (current != nullptr) {
-		next = current->next_;
+	ListNode<T>* current = head_;
+	ListNode<T>* next = nullptr;
+
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		next = current->getNext();
 		delete current;
 		current = next;
 	}
@@ -206,173 +252,34 @@ template <typename T> inline Deque<T>::~Deque()
 
 template <typename T> inline T& Deque<T>::getHead()
 {
-	return head_->value_;
+	if (head_ != nullptr)
+		return head_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("Deque"));
 }
 
 template <typename T> inline T& Deque<T>::getTail()
 {
-	return tail_->value_;
-}
-
-template <typename T> inline 
-void Deque<T>::append(T node)
-{
-	Node<T>* newNode = new Node<T>(node);
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = head_;
-	} else if (numElements_ == 1) {
-		head_->next_ = newNode;
-		newNode->previous_ = head_;
-		tail_ = newNode;
-	} else {
-		Node<T>* last = tail_;
-		last->next_ = newNode;
-		newNode->previous_ = last;
-		tail_ = newNode;
-	}
-
-	++numElements_;
-}
-
-template <typename T> inline
-void Deque<T>::appendLeft(T node)
-{
-	Node<T>* newNode = new Node<T>(node);
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = head_;
-	} else if (numElements_ == 1) {
-		tail_ = head_;
-		head_ = newNode;
-		head_->next_ = tail_;
-		tail_->previous_ = head_;
-	} else {
-		Node<T>* first = head_;
-		first->previous_ = newNode;
-		newNode->next_ = first;
-		head_ = newNode;
-	}
-
-	++numElements_;
-}
-
-template <typename T> inline
-void Deque<T>::remove()
-{
-	if (numElements_ == 0)
-		throw IndexOutOfBoundsException(0, std::string("Deque"));
-
-	// Setting it up like this eliminates duplicate code.
-	Node<T>* newHead = nullptr;
-	if (numElements_ > 1) {
-		newHead = head_->next_;
-	}
-	delete head_;
-	head_ = newHead;
-	head_->previous_ = nullptr;
-	--numElements_;
-}
-
-template <typename T> inline
-void Deque<T>::remove(std::size_t n)
-{
-	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("Deque"));
-
-	std::size_t index = n-1;
-	Node<T>* prev = getNode(index);
-	Node<T>* toRemove = prev->next_;
-	Node<T>* after = toRemove->next_;
-	delete toRemove;
-	prev->next_ = after;
-	after->previous_ = prev;
-	--numElements_;
-}
-
-template <typename T> inline
-T Deque<T>::pop()
-{
-	// Setting it up like this eliminates duplicate code.
-	Node<T>* newHead = nullptr;
-	T value;
-	if (numElements_ > 1) {
-		newHead = head_->next_;
-		value = head_->value_;
-	} else if (numElements_ == 1)
-		value = head_->value_;
+	if (tail_ != nullptr)
+		return tail_->getValue();
 	else
 		throw IndexOutOfBoundsException(0, std::string("Deque"));
-	
-	delete head_;
-	head_ = newHead;
-	head_->previous_ = nullptr;
-	--numElements_;
-	return value;
 }
 
-template <typename T> inline
-T Deque<T>::pop(std::size_t n)
+template <typename T> inline const T& Deque<T>::getHead() const
 {
-	if (n >= numElements_) 
-		throw IndexOutOfBoundsException(n, std::string("Deque"));
-
-	std::size_t index = n - 1;
-	Node<T>* prev = getNode(index);
-	Node<T>* toRemove = prev->next_;
-	Node<T>* after = toRemove->next_;
-	T value = toRemove->value_;
-	delete toRemove;
-	prev->next_ = after;
-	after->previous_ = prev;
-	--numElements_;	
-	return value;
-}	
-
-template <typename T> inline
-void Deque<T>::insert(std::size_t n, T value)
-{
-	if (n > numElements_)
-		throw IndexOutOfBoundsException(n, std::string("Deque"));
-
-	Node<T>* newNode = new Node<T>(value);
-
-	if (numElements_ == 0) {
-		head_ = newNode;
-		tail_ = newNode;
-	} else if (numElements_ == n) {
-		Node<T>* last = tail_;
-		last->next_ = newNode;
-		newNode->previous_ = last;
-		tail_ = newNode;
-	} else if (n == 0) {
-		Node<T>* first = head_;
-		newNode->next_ = first;
-		first->previous_ = newNode;
-		head_ = newNode;
-	} else {
-		std::size_t index = n - 1;
-		Node<T>* prev = getNode(index);
-		Node<T>* toPush = prev->next_;
-
-		prev->next_ = newNode;
-		newNode->previous_ = prev;
-		toPush->previous_ = newNode;
-		newNode->next_ = toPush;
-	}
-	++numElements_;
+	if (head_ != nullptr)
+		return head_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("Deque"));
 }
 
-template <typename T> inline 
-T& Deque<T>::operator[](std::size_t index)
+template <typename T> inline const T& Deque<T>::getTail() const
 {
-	return getNode(index)->value_;
-}
-
-template <typename T> inline 
-const T& Deque<T>::operator[](std::size_t index) const
-{
-	return cgetNode(index)->value_;
+	if (tail_ != nullptr)
+		return tail_->getValue();
+	else
+		throw IndexOutOfBoundsException(0, std::string("Deque"));
 }
 
 template <typename T> inline std::size_t Deque<T>::size() const
@@ -386,16 +293,224 @@ template <typename T> inline bool Deque<T>::isEmpty() const
 }
 
 template <typename T> inline 
-std::ostream& operator<<(std::ostream& str, const Deque<T>& list)
+void Deque<T>::append(T node)
 {
-	str << "{";
-	for (size_t i = 0; i < list.size(); ++i) {
-		str << list[i];
-		if (i != list.size()-1) 
-			str << ", ";
+	ListNode<T>* newListNode = new ListNode<T>(node);
+	if (numElements_ == 0) {
+		head_ = newListNode;
+		tail_ = head_;
+	} else if (numElements_ == 1) {
+		head_->setNext(newListNode);
+		tail_ = newListNode;
+		tail_->setPrevious(head_);
+	} else {
+		ListNode<T>* last = tail_;
+		last->setNext(newListNode);
+		tail_ = newListNode;
 	}
-	str << "}" << std::endl;
-	return str;
+
+	++numElements_;
+}
+
+template <typename T> inline
+void Deque<T>::appendLeft(T node)
+{
+
+}
+
+template <typename T> inline
+void Deque<T>::remove()
+{
+	if (numElements_ == 0)
+		throw IndexOutOfBoundsException(0, std::string("Deque"));
+
+	// Setting it up like this eliminates duplicate code.
+	ListNode<T>* newHead = nullptr;
+	if (numElements_ > 1) {
+		newHead = head_->getNext();
+	}
+	delete head_;
+	head_ = newHead;
+	--numElements_;
+}
+
+template <typename T> inline
+void Deque<T>::remove(std::size_t n)
+{
+	if (n >= numElements_) 
+		throw IndexOutOfBoundsException(n, std::string("Deque"));
+
+	std::size_t index = n-1;
+	ListNode<T>* prev = getListNode(index);
+	ListNode<T>* toRemove = prev->getNext();
+	ListNode<T>* after = toRemove->getNext();
+	delete toRemove;
+	prev->setNext(after);
+	--numElements_;
+}
+
+template <typename T> inline
+T Deque<T>::pop()
+{
+	// Setting it up like this eliminates duplicate code.
+	ListNode<T>* newHead = nullptr;
+	T value;
+	if (numElements_ > 1) {
+		newHead = head_->getNext();
+		value = head_->getValue();
+	} else if (numElements_ == 1)
+		value = head_->getValue();
+	else 
+		throw IndexOutOfBoundsException(0, std::string("Deque"));
+	
+	delete head_;
+	head_ = newHead;
+	--numElements_;
+	return value;
+}
+
+template <typename T> inline
+T Deque<T>::pop(std::size_t n)
+{
+	if (n >= numElements_) 
+		throw IndexOutOfBoundsException(n, std::string("Deque"));
+
+	std::size_t index = n-1;
+	ListNode<T>* prev = getListNode(index);
+	ListNode<T>* toRemove = prev->getNext();
+	ListNode<T>* after = toRemove->getNext();
+	T value = toRemove->getValue();
+	delete toRemove;
+	prev->setNext(after);
+	--numElements_;	
+	return value;
+}
+
+template <typename T> inline
+void Deque<T>::insert(std::size_t n, T value)
+{
+	if (n > numElements_)
+		throw IndexOutOfBoundsException(n, std::string("Deque"));
+
+	ListNode<T>* newListNode = new ListNode<T>(value);
+
+	if (numElements_ == 0) {
+		head_ = newListNode;
+		tail_ = newListNode;
+	} else if (numElements_ == n) {
+		ListNode<T>* last = tail_;
+		last->setNext(newListNode);
+		tail_ = newListNode;
+	} else if (n == 0) {
+		ListNode<T>* first = head_;
+		newListNode->setNext(first);
+		head_ = newListNode;
+	} else {
+		std::size_t index = n - 1;
+		ListNode<T>* prev = getListNode(index);
+		ListNode<T>* toPush = prev->getNext();
+		
+		prev->setNext(newListNode);
+		newListNode->setNext(toPush);
+	}
+	++numElements_;
+}
+
+template <typename T> inline 
+T& Deque<T>::operator[](std::size_t index)
+{
+	return getListNode(index)->getValue();
+}
+
+template <typename T> inline 
+const T& Deque<T>::operator[](std::size_t index) const
+{
+	return cGetListNode(index)->getValue();
+}
+
+template <typename T> inline 
+bool Deque<T>::operator==(const Deque<T>& rhs) const
+{
+	bool sizes = size() == rhs.size();
+	ListNode<T>* lh = head_;
+	ListNode<T>* rh = rhs.head_;
+	if (!sizes)
+		return false;
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		if (lh->getValue() != rh->getValue())
+			return false;
+		lh = lh->getNext();
+		rh = rh->getNext();
+	}
+	return true;
+}
+
+template <typename T> inline 
+bool Deque<T>::operator!=(const Deque<T>& rhs) const
+{
+	bool sizes = size() == rhs.size();
+	std::size_t numSame = 0;
+	ListNode<T>* lh = head_;
+	ListNode<T>* rh = rhs.head_;
+	if (sizes)
+		return false;
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		if (lh->getValue() == rh->getValue())
+			++numSame;
+		lh = lh->getNext();
+		rh = rh->getNext();
+	}
+	return numSame == numElements_;
+}
+
+template <typename T> inline
+ListIterator<T> Deque<T>::begin() 
+{
+	return ListIterator<T>(head_);	
+}
+
+template <typename T> inline
+ListIterator<T> Deque<T>::end()
+{
+	return ListIterator<T>(nullptr);
+}
+
+template <typename T> inline
+ConstListIterator<T> Deque<T>::begin() const 
+{
+	return ConstListIterator<T>(head_);
+}
+
+template <typename T> inline
+ConstListIterator<T> Deque<T>::end() const
+{
+	return ConstListIterator<T>(nullptr);
+}
+
+template <typename T> inline
+void Deque<T>::sort() // Uses a mergesort algorithm
+{
+
+}
+
+template <typename T> inline
+Deque<T> Deque<T>::sorted() const
+{
+	Deque<T> newList;
+	return newList;
+}
+
+template <typename T> inline
+void Deque<T>::reverse()
+{
+
+}
+
+template <typename T> inline
+Deque<T> Deque<T>::reversed() const
+{
+	Deque<T> newList;
+	return newList;
 }
 
 #endif
