@@ -324,7 +324,7 @@ template <typename T> inline LinkedList<T>::LinkedList(
 		numElements_{length}, head_{new ListNode{arr[0], nullptr}} {
 
 	ListNode* current{head_};
-	ListNode* next = new ListNode{0, nullptr};
+	ListNode* next = nullptr;
 
 	for (std::size_t i = 1; i < length; ++i) {
 		next = new ListNode{arr[i], nullptr};
