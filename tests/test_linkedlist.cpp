@@ -407,7 +407,7 @@ TEST(LinkedListTest, reverseOneItemList)
 	EXPECT_EQ(list.getHead(), 1);
 }
 
-TEST(LinkedListTest, DISABLED_reversedOneItemList) 
+TEST(LinkedListTest, reversedOneItemList) 
 {
 	LinkedList<int> list;
 	list.append(1);
@@ -433,7 +433,7 @@ TEST(LinkedListTest, reverseManyItemsList)
 	}
 }
 
-TEST(LinkedListTest, DISABLED_reversedManyItemsList) 
+TEST(LinkedListTest, reversedManyItemsList) 
 {
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int reversedArray[5] = {7, 1, 5, 2, 3};

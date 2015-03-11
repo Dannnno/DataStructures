@@ -642,13 +642,13 @@ LinkedList<T> LinkedList<T>::reversed() const
 	if (numElements_ == 0)
 		return reversedList;
 
-	T* arr = toArray();
+	ListNode* current_ = head_;
 
-	for (std::size_t i = numElements_-2; i != 0; --i) {
-		reversedList.append(arr[i]);
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		reversedList.insert(0, current_->value_);
+		current_ = current_->next_;
 	}
-
-	delete [] arr;
+	
 	return reversedList;
 }
 
