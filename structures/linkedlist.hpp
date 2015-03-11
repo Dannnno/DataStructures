@@ -50,6 +50,16 @@ public:
 	LinkedList(T* arr, std::size_t length);
 
 	/**
+	 * \brief Copy constructor.
+	 */
+	LinkedList(const LinkedList<T>& list);
+
+	/**
+	 * \brief Assignment to a list;
+	 */
+	void operator=(const List<T>& list);
+
+	/**
 	 * \brief The destructor for a linked list.
 	 */
 	~LinkedList();
@@ -182,6 +192,11 @@ public:
      * \post The original list is unchanged.
      */
     LinkedList<T> reversed() const;
+
+    /**
+     * \brief Returns an array of the items in the list.
+     */
+    T* toArray() const;
 
 private:
 	class Iterator : public std::iterator<std::forward_iterator_tag, T>
@@ -321,7 +336,8 @@ template <typename T> inline LinkedList<T>::LinkedList() :
 
 template <typename T> inline LinkedList<T>::LinkedList(
 	T* arr, std::size_t length) : 
-		numElements_{length}, head_{new ListNode{arr[0], nullptr}} {
+		numElements_{length}, head_{new ListNode{arr[0], nullptr}}, 
+		tail_{nullptr} {
 
 	ListNode* current{head_};
 	ListNode* next = nullptr;
@@ -332,6 +348,23 @@ template <typename T> inline LinkedList<T>::LinkedList(
 		current = next;
 	}
 	tail_ = current;
+}
+
+template <typename T> inline 
+LinkedList<T>::LinkedList(const LinkedList<T>& list)
+{
+	for (T node : list)
+		append(node);
+}
+
+template <typename T> inline
+void LinkedList<T>::operator=(const List<T>& list)
+{
+	while (!isEmpty())
+		remove();
+
+	for (T node : list)
+		append(node);
 }
 
 template <typename T> inline LinkedList<T>::~LinkedList()
@@ -581,14 +614,59 @@ LinkedList<T> LinkedList<T>::sorted() const
 template <typename T> inline
 void LinkedList<T>::reverse()
 {
+	ListNode* first = head_;
+	ListNode* last = tail_;
 
+	ListNode* current = head_;
+	ListNode* previous = nullptr;
+	ListNode* next = nullptr;
+
+	std::size_t i = 0;
+
+	while (i < numElements_) {
+		next = current->next_;
+		current->next_ = previous;
+		previous = current;
+		current = next;
+		++i;
+	}
+
+	head_ = last;
+	tail_ = first;
 }
 
 template <typename T> inline
 LinkedList<T> LinkedList<T>::reversed() const
 {
-	LinkedList<T> newList;
-	return newList;
+	LinkedList<T> reversedList;
+	if (numElements_ == 0)
+		return reversedList;
+
+	T* arr = toArray();
+
+	for (std::size_t i = numElements_-2; i != 0; --i) {
+		reversedList.append(arr[i]);
+	}
+
+	delete [] arr;
+	return reversedList;
+}
+
+template <typename T> inline
+T* LinkedList<T>::toArray() const
+{
+	if (numElements_ == 0)
+		throw IndexOutOfBoundsException(0, "LinkedList");
+
+	T* newArray = new T[numElements_];
+	std::size_t i = 0;
+
+	for (T node : *this) {
+		newArray[i] = node;
+		++i;
+	}
+	
+	return newArray;
 }
 
 template <typename T> inline

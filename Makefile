@@ -32,7 +32,7 @@ ifneq ($(OS), Windows_NT)
 endif
 
 # Flags to ensure proper compilation
-CXXFLAGS := -g -Wall -Wextra -pedantic -std=gnu++11
+CXXFLAGS := -g -Wall -Wextra -Werror -pedantic -std=gnu++11
 # Flags necessary to run gcov
 COVERAGE := -fprofile-arcs -ftest-coverage
 # Libraries to link for gtest

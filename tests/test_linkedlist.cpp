@@ -15,6 +15,34 @@ TEST(LinkedListTest, constructor)
 	EXPECT_EQ(5, list.size());
 }
 
+TEST(LinkedListTest, DISABLED_copyConstructor)
+{
+	int initarray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initarray, 5);
+	LinkedList<int> copy(list);
+
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(list[i], copy[i]);
+
+	copy[3] = 1;
+
+	EXPECT_NE(list[3], copy[3]);
+}
+
+TEST(LinkedListTest, DISABLED_assignmentList)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list(initArray, 5);
+	LinkedList<int> list2{list};
+
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(list[i], list2[i]);
+
+	list[3] = 1;
+
+	EXPECT_NE(list[3], list2[3]);
+}
+
 TEST(LinkedListTest, empty) 
 {
 	LinkedList<int> list1;
@@ -265,14 +293,13 @@ TEST(LinkedListTest, appendToMany)
 	EXPECT_EQ(6, list[5]);
 }
 
-// Don't have the foreach working atm
 TEST(LinkedListTest, forEach) 
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initArray, 5);
 
 	int i = 0;
-	for (auto node : list) {
+	for (int node : list) {
 		EXPECT_EQ(node, initArray[i]);
 		++i;
 	}
@@ -349,7 +376,7 @@ TEST(DISABLED_LinkedListTest, sortedManyItemsList)
 	EXPECT_NE(copy, list);
 }
 
-TEST(DISABLED_LinkedListTest, reverseEmptyList) 
+TEST(LinkedListTest, reverseEmptyList) 
 {
 	LinkedList<int> list;
 
@@ -358,7 +385,7 @@ TEST(DISABLED_LinkedListTest, reverseEmptyList)
 	EXPECT_EQ(list.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, reversedEmptyList)
+TEST(LinkedListTest, reversedEmptyList)
 {
 	LinkedList<int> list;
 
@@ -368,7 +395,7 @@ TEST(DISABLED_LinkedListTest, reversedEmptyList)
 	EXPECT_EQ(copy.size(), 0);
 }
 
-TEST(DISABLED_LinkedListTest, reverseOneItemList) 
+TEST(LinkedListTest, reverseOneItemList) 
 {
 	LinkedList<int> list;
 	list.append(1);
@@ -380,7 +407,7 @@ TEST(DISABLED_LinkedListTest, reverseOneItemList)
 	EXPECT_EQ(list.getHead(), 1);
 }
 
-TEST(DISABLED_LinkedListTest, reversedOneItemList) 
+TEST(LinkedListTest, DISABLED_reversedOneItemList) 
 {
 	LinkedList<int> list;
 	list.append(1);
@@ -393,7 +420,7 @@ TEST(DISABLED_LinkedListTest, reversedOneItemList)
 	EXPECT_EQ(list, copy);
 }
 
-TEST(DISABLED_LinkedListTest, reverseManyItemsList) 
+TEST(LinkedListTest, reverseManyItemsList) 
 {
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int reversedArray[5] = {7, 1, 5, 2, 3};
@@ -406,7 +433,7 @@ TEST(DISABLED_LinkedListTest, reverseManyItemsList)
 	}
 }
 
-TEST(DISABLED_LinkedListTest, reversedManyItemsList) 
+TEST(LinkedListTest, DISABLED_reversedManyItemsList) 
 {
 	int initArray[5] = {3, 2, 5, 1, 7};
 	int reversedArray[5] = {7, 1, 5, 2, 3};
@@ -418,4 +445,30 @@ TEST(DISABLED_LinkedListTest, reversedManyItemsList)
 		EXPECT_EQ(reversedArray[i], copy[i]);
 	}
 	EXPECT_NE(copy, list);
+}
+
+TEST(LinkedListTest, toArrayEmpty)
+{
+	LinkedList<int> list;
+	EXPECT_THROW(list.toArray(), IndexOutOfBoundsException);
+}
+
+TEST(LinkedListTest, toArrayOne)
+{
+	LinkedList<int> list;
+	list.append(1);
+	int* newArray = list.toArray();
+	EXPECT_EQ(1, newArray[0]);
+	delete [] newArray;
+}
+
+TEST(LinkedListTest, toArrayMany)
+{
+	int initArray[5] = {3, 2, 5, 1, 7};
+	LinkedList<int> list(initArray, 5);
+
+	int* resultArray = list.toArray();
+	for (size_t i = 0; i < 5; ++i) 
+		EXPECT_EQ(initArray[i], resultArray[i]);
+	delete [] resultArray;
 }
