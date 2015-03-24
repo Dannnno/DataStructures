@@ -52,20 +52,26 @@ public:
 	 */
 	LinkedList(const LinkedList<T>& orig);
 
+	/**
+	 * \brief Move constructor.
+	 */
+	LinkedList(LinkedList<T>&& other);
+
     /**
 	 * \brief Assignment to a list;
 	 */
-	LinkedList<T>& operator=(const List<T>& rhs);
+	LinkedList<T>& operator=(LinkedList<T> rhs);
 
 	/**
 	 * \brief The destructor for a linked list.
 	 */
 	~LinkedList();
 
-    /**
-     * \brief Swap function for a LinkedList.  
-     */
-    void swap(LinkedList<T>& rhs);
+	/**
+	 * \brief Non-member function version of swap.
+	 */
+	template <class P>
+	friend void swap(LinkedList<P>& lhs, LinkedList<P>& rhs);
 
 	/**
 	 * \brief The head (first item) of the list.
@@ -331,13 +337,6 @@ private:
 	ListNode* head_;
 	ListNode* tail_;
 };
-
-
-/**
- * \brief Non-member function version of swap.
- */
-template <typename T>
-void swap(LinkedList<T>& lhs, LinkedList<T>& rhs);
 
 /**
  * \brief Overloads the << operator.

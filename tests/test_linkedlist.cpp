@@ -1,6 +1,5 @@
 #include <sstream>
 #include <string>
-#include <iostream>
 
 #include "gtest/gtest.h"
 
@@ -16,7 +15,7 @@ TEST(LinkedListTest, constructor)
 	EXPECT_EQ(5, list.size());
 }
 
-TEST(LinkedListTest, DISABLED_copyConstructor)
+TEST(LinkedListTest, copyConstructor)
 {
 	int initarray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initarray, 5);
@@ -30,7 +29,18 @@ TEST(LinkedListTest, DISABLED_copyConstructor)
 	EXPECT_NE(list[3], copy[3]);
 }
 
-TEST(LinkedListTest, DISABLED_assignmentList)
+TEST(LinkedListTest, moveConstructor)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list{LinkedList<int>(initArray, 5)};
+
+	EXPECT_EQ(list.size(), 5);
+
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(list[i], initArray[i]);
+}
+
+TEST(LinkedListTest, assignment)
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initArray, 5);
@@ -42,7 +52,6 @@ TEST(LinkedListTest, DISABLED_assignmentList)
 	}
 
 	list[3] = 1;
-	std::cout << list[3] << ':' << list2[3] << std::endl;
 	EXPECT_NE(list[3], list2[3]);
 	EXPECT_EQ(list[3], 1);
 	EXPECT_EQ(list2[3], 4);
@@ -489,12 +498,21 @@ TEST(LinkedListTest, toArrayMany)
 	delete [] resultArray;
 }
 
-TEST(LinkedListTest, swapMF)
+TEST(LinkedListTest, swap)
 {
-	
-}
+	int initArray1[5] = {1, 2, 3, 4, 5};
+	int initArray2[3] = {6, 7, 8};
+	LinkedList<int> list1{initArray1, 5};
+	LinkedList<int> list2{initArray2, 3};
 
-TEST(LinkedListTest, swapNMF)
-{
+	swap(list1, list2);
 
+	EXPECT_EQ(list1.size(), 3);
+	EXPECT_EQ(list2.size(), 5);
+
+	for (size_t i = 0; i < 3; ++i) 
+		EXPECT_EQ(list1[i], initArray2[i]);
+
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(list2[i], initArray1[i]);
 }

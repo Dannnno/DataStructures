@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <iterator>
+#include <utility>
 
 #include "list.hpp"
 #include "../exceptions.hpp"
@@ -36,23 +37,37 @@ template <typename T> inline LinkedList<T>::LinkedList(
 }
 
 template <typename T> inline 
-LinkedList<T>::LinkedList(const LinkedList<T>& orig)
+LinkedList<T>::LinkedList(const LinkedList<T>& orig) :
+	numElements_{0},
+	head_{nullptr},
+	tail_{nullptr} 
 {
 	for (T node : orig)
 		append(node);
 }
 
 template <typename T> inline
-LinkedList<T>& LinkedList<T>::operator=(const List<T>& rhs)
+void swap(LinkedList<T>& first, LinkedList<T>& second)
 {
-	while (!isEmpty())
-		remove();
+	std::swap(first.head_, second.head_);
+	std::swap(first.tail_, second.tail_);
+	std::swap(first.numElements_, second.numElements_);
+}
 
-	ListNode* current = rhs.head_;
-	for (std::size_t i = 0; i < rhs.numElements_; ++i) {
-		append(current->value_);
-		current = current->next_;
-	}
+template <typename T> inline
+LinkedList<T>::LinkedList(LinkedList<T>&& other) :
+	numElements_{0},
+	head_{nullptr},
+	tail_{nullptr}
+{
+	swap(*this, other);
+}
+
+template <typename T> inline
+LinkedList<T>& LinkedList<T>::operator=(LinkedList<T> rhs)
+{
+	swap(*this, rhs);
+	return *this;
 }
 
 template <typename T> inline LinkedList<T>::~LinkedList()
