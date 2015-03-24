@@ -30,3 +30,4 @@
 # Coverage files
 *.gcda
 *.gcno
+*.gcov

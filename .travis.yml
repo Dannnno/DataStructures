@@ -16,7 +16,11 @@ before_install:
  - make tests
 script:
  - valgrind --leak-check=full --show-reachable=yes ./all_tests 
- # - all_tests
+
+after_success:
+ - pip install gcovr
+ - python gcovr -r .
+
 notifications:
   recipients:
     - dannnno16@gmail.com

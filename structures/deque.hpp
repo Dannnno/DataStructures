@@ -1,9 +1,7 @@
 /**
  * \file deque.hpp
  * \author Dan Obermiller
- * \brief Implementation of a doubly list.
- * \remarks Uses templates and operator overloading to provide an almost
- * enjoyable interface.
+ * \brief Implementation of a doubly linked list.
  */
 
 #ifndef D_LINKEDLIST_HPP
@@ -14,17 +12,30 @@
 #include <iostream>
 
 #include "../exceptions.hpp"
-#include "listnode.hpp"
-#include "listiterator.hpp"
 #include "list.hpp"
 
 
 /**
- * \brief A paramaterized doubly linked list
+ * \brief A parameterized doubly linked list
  */
 template <typename T>
 class Deque : public List<T>
 {
+private:
+	/**
+	 * \brief Iterator for a deque.
+	 */
+	class Iterator;
+
+	/**
+	 * \brief Constant iterator for a deque.
+	 */
+	class ConstIterator;
+
+	/**
+	 * \brief Node of a deque
+	 */
+	struct ListNode;
 public:
 
 	/**
@@ -36,6 +47,10 @@ public:
 	 * \brief A constructor from an array.
 	 */
 	Deque(T* arr, std::size_t length);
+
+	/**
+	 * \brief The copy constructor.
+	 */
 
 	/**
 	 * \brief The destructor.

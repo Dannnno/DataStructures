@@ -35,7 +35,7 @@ endif
 CXXFLAGS := -g -Wall -Wextra -Werror -pedantic -std=gnu++11
 # Flags necessary to run gcov
 COVERAGE := -fprofile-arcs -ftest-coverage
-# Libraries to link for gtest
+# Libraries to link for gtest and coverage
 TEST_LINK += -lgtest -fprofile-arcs
 
 # Allows me to minimize code repetition when compiling source files
@@ -57,4 +57,4 @@ obj/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 
 
 clean:
-	rm -f $(wildcard *.out *.exe *.gcno *.o *.gcda all_tests)
+	rm -rf *.out *.exe *.gcno *.o *.gcda all_tests

@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include <iostream>
 
 #include "gtest/gtest.h"
 
@@ -33,14 +34,18 @@ TEST(LinkedListTest, DISABLED_assignmentList)
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
 	LinkedList<int> list(initArray, 5);
-	LinkedList<int> list2{list};
+	LinkedList<int> list2;
+	list2 = list;
 
-	for (size_t i = 0; i < 5; ++i)
+	for (size_t i = 0; i < 5; ++i) {
 		EXPECT_EQ(list[i], list2[i]);
+	}
 
 	list[3] = 1;
-
+	std::cout << list[3] << ':' << list2[3] << std::endl;
 	EXPECT_NE(list[3], list2[3]);
+	EXPECT_EQ(list[3], 1);
+	EXPECT_EQ(list2[3], 4);
 }
 
 TEST(LinkedListTest, empty) 
@@ -109,6 +114,17 @@ TEST(LinkedListTest, subscriptOutOfBounds)
 	list.append(2);
 
 	EXPECT_THROW(list[2], IndexOutOfBoundsException);
+}
+
+TEST(LinkedListTest, subscriptAssignment)
+{
+	LinkedList<int> list;
+	list.append(1);
+	list.append(2);
+
+	EXPECT_EQ(1, list[0]);
+	list[0] = 5;
+	EXPECT_EQ(5, list[0]);
 }
 
 TEST(LinkedListTest, stringLengthOne) 
@@ -471,4 +487,14 @@ TEST(LinkedListTest, toArrayMany)
 	for (size_t i = 0; i < 5; ++i) 
 		EXPECT_EQ(initArray[i], resultArray[i]);
 	delete [] resultArray;
+}
+
+TEST(LinkedListTest, swapMF)
+{
+	
+}
+
+TEST(LinkedListTest, swapNMF)
+{
+
 }

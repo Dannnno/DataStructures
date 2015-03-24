@@ -29,9 +29,11 @@ Array types
 List types
 ==========
 <ul>
+	<li>Array list</li>
 	<li>Unrolled linked list</li>
 	<li>VList</li>
 	<li>XOR linked list</li>
+	<li>Stack</li>
 </ul>
 
 Tree types
