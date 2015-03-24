@@ -157,6 +157,13 @@ public:
   	 */
   	bool operator!=(const LinkedList<T>& rhs) const;
 
+	/**
+	 * \brief Overloads the << operator.
+	 */
+	template <class P>
+	friend std::ostream& operator<<(
+		std::ostream& str, const LinkedList<P>& list);
+
   	typedef Iterator iterator;
   	typedef ConstIterator const_iterator;
 
@@ -337,12 +344,6 @@ private:
 	ListNode* head_;
 	ListNode* tail_;
 };
-
-/**
- * \brief Overloads the << operator.
- */
-template <typename T>
-std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list);
 
 #include "_linkedlist.hpp"
 

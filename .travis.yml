@@ -28,7 +28,7 @@ script:
 
 after_success:
  - sudo apt-get install python-pip
- - pip install gcovr
+ - sudo pip install gcovr
  # gcovr is only a script, and won't run without this
  - PATH=$PYTHONHOME/scripts:$PATH
  - python gcovr -r .
