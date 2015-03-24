@@ -240,6 +240,7 @@ void LinkedList<T>::insert(std::size_t n, T value)
 	++numElements_;
 }
 
+// These addition and multiplication operators are 100% broken.  Do not use
 template <typename T> inline
 LinkedList<T> operator+(LinkedList<T> lhs, LinkedList<T> const& rhs)
 {

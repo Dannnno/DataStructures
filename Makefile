@@ -51,10 +51,16 @@ OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 tests: $(TEST_OBJ) $(OTHER_OBJ)
 	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
 
-obj/%.o: %.cpp
+obj/test_%.o: test_%.cpp %.hpp _%.hpp
     # The $@ variable binds to the target obj/%.o
     # The $< variable binds to the dependencies %.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 
+
+obj/exceptions.o: exceptions.cpp exceptions.hpp
+	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o obj/exceptions.o exceptions.cpp
+
+obj/runtests.o: runtests.cpp
+	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o obj/runtests.o runtests.cpp
 
 clean:
 	rm -rf *.out *.exe *.gcno *.o *.gcda all_tests
