@@ -138,6 +138,27 @@ public:
 	void insert(std::size_t index, T value);
 
 	/**
+	 * \brief Overloads the addition operator.
+	 * \details Adds two lists together and returns the result.
+	 */
+    template <typename P>
+    friend LinkedList<P> operator+(LinkedList<P> lhs, LinkedList<P> const& rhs);
+
+    /**
+     * \brief Overloads the addition operator.
+     * \details Adds an array to the list and returns the result
+     */
+    template <typename P>
+    friend LinkedList<P> operator+(LinkedList<P> lhs, P* rhs);
+
+	/**
+	 * \brief Overloads the multiplication operator.
+	 * \details Allows us to make the list repeat n times.
+	 */
+	template <typename P>
+	friend LinkedList<P> operator*(LinkedList<P> lhs, std::size_t n);
+
+	/**
 	 * \brief Overloads the mutable subscript operator.
 	 */
     T& operator[](std::size_t index);
@@ -156,6 +177,13 @@ public:
   	 * \brief Overloads the inequivalence operator.
   	 */
   	bool operator!=(const LinkedList<T>& rhs) const;
+
+  	/**
+  	 * \brief Returns an array of the values within the list.
+  	 * \details This is a dynamically allocated array and needs to be
+  	 *          explicitly deleted.
+  	 */
+  	T* asArray() const;
 
 	/**
 	 * \brief Overloads the << operator.

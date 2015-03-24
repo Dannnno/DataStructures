@@ -29,6 +29,7 @@ TEST(LinkedListTest, copyConstructor)
 	EXPECT_NE(list[3], copy[3]);
 }
 
+// Pretty sure this isn't using the move constructor...
 TEST(LinkedListTest, moveConstructor)
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
@@ -515,4 +516,110 @@ TEST(LinkedListTest, swap)
 
 	for (size_t i = 0; i < 5; ++i)
 		EXPECT_EQ(list2[i], initArray1[i]);
+}
+
+TEST(LinkedListTest, DISABLED_additionList)
+{
+	int initArray1[5] = {1, 2, 3, 4, 5};
+	int initArray2[3] = {6, 7, 8};
+	int resultArray[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+	LinkedList<int> list1{initArray1, 5};
+	LinkedList<int> list2{initArray2, 3};
+
+	LinkedList<int> result{list1 + list2};
+
+	EXPECT_EQ(list1.size(), 5);
+	EXPECT_EQ(list2.size(), 3);
+
+	for (size_t i = 0; i < 5; ++i) 
+		EXPECT_EQ(list1[i], initArray1[i]);
+
+	for (size_t i = 0; i < 3; ++i)
+		EXPECT_EQ(list2[i], initArray2[i]);
+
+	EXPECT_EQ(result.size(), 8);
+
+	for (size_t i = 0; i < 8; ++i)
+		EXPECT_EQ(result[i], resultArray[i]);
+
+	result[3] = 9;
+
+	EXPECT_EQ(list1[3], 4);
+}
+
+TEST(LinkedListTest, additionArray)
+{
+
+}
+
+TEST(LinkedListTest, DISABLED_multiplicationZero)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+
+	LinkedList<int> list{initArray, 5};
+
+	LinkedList<int> result{list * 0};
+
+	EXPECT_EQ(list.size(), 5);
+	EXPECT_EQ(result.size(), 5);
+
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(list[i], result[i]);
+		EXPECT_EQ(result[i], initArray[i]);
+	}
+
+	result[3] = 9;
+
+	EXPECT_EQ(list[3], 4);
+}
+
+TEST(LinkedListTest, multiplicationOne)
+{
+
+}
+
+TEST(LinkedListTest, multiplicationMany)
+{
+
+}
+
+TEST(LinkedListTest, asArrayEmpty)
+{
+	// This is essentially undefined behavior - I should probably throw 
+	// an exception
+}
+
+TEST(LinkedListTest, asArrayOne)
+{
+	LinkedList<int> list;
+	list.append(1);
+
+	int* myArray = list.asArray();
+
+	EXPECT_EQ(myArray[0], 1);
+	list[0] = 9;
+	EXPECT_EQ(myArray[0], 1);
+	myArray[0] = 17;
+	EXPECT_EQ(list[0], 9);
+
+	delete [] myArray;
+}
+
+TEST(LinkedListTest, asArrayMany)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list{initArray, 5};
+
+	int* myArray = list.asArray();
+
+	for (size_t i = 0; i < 5; ++i)
+		EXPECT_EQ(initArray[i], myArray[i]);
+
+	list[0] = 9;
+	EXPECT_EQ(myArray[0], 1);
+	myArray[0] = 17;
+	EXPECT_EQ(list[0], 9);
+
+	delete [] myArray;
 }

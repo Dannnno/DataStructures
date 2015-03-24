@@ -56,11 +56,12 @@ void swap(LinkedList<T>& first, LinkedList<T>& second)
 
 template <typename T> inline
 LinkedList<T>::LinkedList(LinkedList<T>&& other) :
-	numElements_{0},
-	head_{nullptr},
-	tail_{nullptr}
+	numElements_{other.numElements_},
+	head_{other.head_},
+	tail_{other.tail_}
 {
-	swap(*this, other);
+	other.head_ = nullptr;
+	other.tail_ = nullptr;
 }
 
 template <typename T> inline
@@ -237,6 +238,50 @@ void LinkedList<T>::insert(std::size_t n, T value)
 		newListNode->next_ = toPush;
 	}
 	++numElements_;
+}
+
+template <typename T> inline
+LinkedList<T> operator+(LinkedList<T> lhs, LinkedList<T> const& rhs)
+{
+	for (T node: rhs)
+		lhs.append(node);
+	return lhs;
+}
+
+template <typename T> inline
+LinkedList<T> operator+(LinkedList<T> lhs, T* rhs)
+{
+	for (T node : rhs)
+		lhs.append(node);
+	return lhs;
+}
+
+template <typename T> inline
+LinkedList<T> operator*(LinkedList<T> lhs, std::size_t n)
+{
+	std::size_t last = lhs.numElements_;
+	auto current = lhs.head_;
+	for (std::size_t i = 0; i < n; ++i) {
+		for (std::size_t j = 0; j < last; ++j) {
+			lhs.append(current->value_);
+			current = current->next_;
+		}
+		current = lhs.head_;
+	}
+	return lhs;
+}
+
+template <typename T> inline
+T* LinkedList<T>::asArray() const
+{
+	T* arr = new T[numElements_];
+	ListNode* current = head_;
+	for (std::size_t i = 0; i < numElements_; ++i) {
+		arr[i] = current->value_;
+		current = current->next_;
+	}
+
+	return arr;
 }
 
 template <typename T> inline 
