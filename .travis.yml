@@ -18,6 +18,7 @@ script:
  - valgrind --leak-check=full --show-reachable=yes ./all_tests 
 
 after_success:
+ - sudo apt-get install python-pip
  - pip install gcovr
  - python gcovr -r .
 
