@@ -1,24 +1,28 @@
 language: cpp
+
 compiler:
   - clang
   - gcc
+
 before_install:
- - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+ - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
  - sudo add-apt-repository -y ppa:jtaylor/jtaylor
  - sudo apt-get update -qq
  - if [ "$CXX" = "clang++" ]; then 
-     sudo apt-get install -qq libstdc++-4.8-dev; 
-   else 
-     if [ "$CXX" = "g++" ]; then 
-       sudo apt-get install -qq g++-4.8; 
-       export CXX="g++-48" CC="gcc-4.8";
-     fi
+     sudo apt-get install -qq libstdc++-4.8-dev;
+   fi
+ - if [ "$CXX" = "g++" ]; then 
+     sudo apt-get install -qq g++-4.8; 
+   fi
+ - if [ "$CXX" = "g++" ]; then 
+     export CXX="g++-4.8" CC="gcc-4.8"; 
    fi
  - sudo apt-get install libgtest-dev
  - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
  - sudo apt-get install -qq libc6-dbg
  - sudo apt-get install -qq valgrind
  - make tests
+
 script:
  - valgrind --leak-check=full --show-reachable=yes ./all_tests 
 
@@ -27,6 +31,8 @@ after_success:
  - pip install gcovr
  # gcovr is only a script, and won't run without this
  - PATH=$PYTHONHOME/scripts:$PATH
+ - python gcovr -r .
+
  - python gcovr -r .
 
 notifications:
