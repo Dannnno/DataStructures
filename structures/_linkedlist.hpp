@@ -248,7 +248,7 @@ template <typename T> inline
 LinkedList<T> operator*(LinkedList<T> lhs, std::size_t n)
 {
 	LinkedList<T> orig{lhs};
-	
+
 	// We start at one because both 0 and 1 are being considered identity values
 	// for this operator.
 	for (std::size_t i = 1; i < n; ++i) {
@@ -499,6 +499,18 @@ std::ostream& operator<<(std::ostream& str, const LinkedList<T>& list)
 	}
 	str << "}" << std::endl;
 	return str;
+}
+
+template <typename T> inline
+typename LinkedList<T>::ListNode* LinkedList<T>::getListNode(
+	std::size_t index) const
+{
+	if (index >= numElements_)
+		throw IndexOutOfBoundsException(index, "LinkedList");
+
+	const_iterator it = begin();
+	std::advance(it, index);
+	return it.current_;
 }
 
 #endif

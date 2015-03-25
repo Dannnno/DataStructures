@@ -346,20 +346,7 @@ private:
 	/**
 	 * \brief Gets a list node at the given index
 	 */
-	ListNode* getListNode(std::size_t index) const
-	{
-		if (index >= numElements_)
-			throw IndexOutOfBoundsException(index, "LinkedList");
-
-		std::size_t i = 0;
-		ListNode* current = head_;
-
-		while (i < index) {
-			current = current->next_;
-			++i;
-		}
-		return current;
-	}
+	LinkedList<T>::ListNode* getListNode(std::size_t index) const;
 
 	std::size_t numElements_;
 	ListNode* head_;

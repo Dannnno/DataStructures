@@ -39,7 +39,7 @@ COVERAGE := -fprofile-arcs -ftest-coverage
 TEST_LINK += -lgtest -fprofile-arcs
 
 # Allows me to minimize code repetition when compiling source files
-TO_TEST := linkedlist #deque mergesort
+TO_TEST := linkedlist deque # mergesort
 TESTS = $(foreach file, $(TO_TEST), tests/test_$(file).cpp)
 TEST_OBJ = $(patsubst %.cpp, obj/%.o, $(patsubst tests/%.cpp, %.cpp, $(TESTS)))
 
@@ -49,7 +49,7 @@ OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
 OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
 tests: $(TEST_OBJ) $(OTHER_OBJ)
-	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
+	$(CXX) -o a_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
 
 obj/test_%.o: test_%.cpp %.hpp _%.hpp
     # The $@ variable binds to the target obj/%.o
