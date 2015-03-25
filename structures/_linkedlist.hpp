@@ -56,12 +56,11 @@ void swap(LinkedList<T>& first, LinkedList<T>& second)
 
 template <typename T> inline
 LinkedList<T>::LinkedList(LinkedList<T>&& other) :
-	numElements_{other.numElements_},
-	head_{other.head_},
-	tail_{other.tail_}
+	numElements_{0},
+	head_{nullptr},
+	tail_{nullptr}
 {
-	other.head_ = nullptr;
-	other.tail_ = nullptr;
+	swap(*this, other);
 }
 
 template <typename T> inline
@@ -73,14 +72,8 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList<T> rhs)
 
 template <typename T> inline LinkedList<T>::~LinkedList()
 {
-	ListNode* current = head_;
-	ListNode* next = nullptr;
-
-	for (std::size_t i = 0; i < numElements_; ++i) {
-		next = current->next_;
-		delete current;
-		current = next;
-	}
+	while (!isEmpty())
+		remove();
 }
 
 template <typename T> inline T& LinkedList<T>::getHead()
@@ -240,34 +233,26 @@ void LinkedList<T>::insert(std::size_t n, T value)
 	++numElements_;
 }
 
-// These addition and multiplication operators are 100% broken.  Do not use
 template <typename T> inline
-LinkedList<T> operator+(LinkedList<T> lhs, LinkedList<T> const& rhs)
+LinkedList<T> operator+(LinkedList<T> lhs, LinkedList<T> rhs)
 {
-	for (T node: rhs)
-		lhs.append(node);
-	return lhs;
-}
-
-template <typename T> inline
-LinkedList<T> operator+(LinkedList<T> lhs, T* rhs)
-{
-	for (T node : rhs)
-		lhs.append(node);
+	lhs.numElements_ += rhs.numElements_;
+	lhs.tail_->next_ = rhs.head_;
+	lhs.tail_ = rhs.tail_;
+	// This bypasses the destructor on rhs, preventing it from double-deleting
+	rhs.numElements_ = 0;
 	return lhs;
 }
 
 template <typename T> inline
 LinkedList<T> operator*(LinkedList<T> lhs, std::size_t n)
 {
-	std::size_t last = lhs.numElements_;
-	auto current = lhs.head_;
-	for (std::size_t i = 0; i < n; ++i) {
-		for (std::size_t j = 0; j < last; ++j) {
-			lhs.append(current->value_);
-			current = current->next_;
-		}
-		current = lhs.head_;
+	LinkedList<T> orig{lhs};
+	
+	// We start at one because both 0 and 1 are being considered identity values
+	// for this operator.
+	for (std::size_t i = 1; i < n; ++i) {
+		lhs = lhs + orig;
 	}
 	return lhs;
 }

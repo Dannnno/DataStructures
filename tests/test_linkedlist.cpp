@@ -1,5 +1,7 @@
+#include <cassert>
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "gtest/gtest.h"
 
@@ -29,11 +31,11 @@ TEST(LinkedListTest, copyConstructor)
 	EXPECT_NE(list[3], copy[3]);
 }
 
-// Pretty sure this isn't using the move constructor...
 TEST(LinkedListTest, moveConstructor)
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
-	LinkedList<int> list{LinkedList<int>(initArray, 5)};
+	LinkedList<int> mlist{initArray, 5};
+	LinkedList<int> list{std::move(mlist)};
 
 	EXPECT_EQ(list.size(), 5);
 
@@ -518,7 +520,7 @@ TEST(LinkedListTest, swap)
 		EXPECT_EQ(list2[i], initArray1[i]);
 }
 
-TEST(LinkedListTest, DISABLED_additionList)
+TEST(LinkedListTest, additionList)
 {
 	int initArray1[5] = {1, 2, 3, 4, 5};
 	int initArray2[3] = {6, 7, 8};
@@ -527,7 +529,7 @@ TEST(LinkedListTest, DISABLED_additionList)
 	LinkedList<int> list1{initArray1, 5};
 	LinkedList<int> list2{initArray2, 3};
 
-	LinkedList<int> result{list1 + list2};
+	LinkedList<int> result = list1 + list2;
 
 	EXPECT_EQ(list1.size(), 5);
 	EXPECT_EQ(list2.size(), 3);
@@ -548,18 +550,11 @@ TEST(LinkedListTest, DISABLED_additionList)
 	EXPECT_EQ(list1[3], 4);
 }
 
-TEST(LinkedListTest, additionArray)
-{
-
-}
-
-TEST(LinkedListTest, DISABLED_multiplicationZero)
+TEST(LinkedListTest, multiplicationZero)
 {
 	int initArray[5] = {1, 2, 3, 4, 5};
-
 	LinkedList<int> list{initArray, 5};
-
-	LinkedList<int> result{list * 0};
+	LinkedList<int> result = list * 0;
 
 	EXPECT_EQ(list.size(), 5);
 	EXPECT_EQ(result.size(), 5);
@@ -576,18 +571,65 @@ TEST(LinkedListTest, DISABLED_multiplicationZero)
 
 TEST(LinkedListTest, multiplicationOne)
 {
+	int initArray[5] = {1, 2, 3, 4, 5};
+	LinkedList<int> list{initArray, 5};
+	LinkedList<int> result = list * 1;
 
+	EXPECT_EQ(list.size(), 5);
+	EXPECT_EQ(result.size(), 5);
+
+	for (size_t i = 0; i < 5; ++i) {
+		EXPECT_EQ(list[i], result[i]);
+		EXPECT_EQ(result[i], initArray[i]);
+	}
+
+	result[3] = 9;
+
+	EXPECT_EQ(list[3], 4);
 }
 
 TEST(LinkedListTest, multiplicationMany)
 {
+	int initArray[5] = {1, 2, 3, 4, 5};
+	int resultArray[25] = {1, 2, 3, 4, 5,
+						   1, 2, 3, 4, 5,
+						   1, 2, 3, 4, 5,
+						   1, 2, 3, 4, 5,
+						   1, 2, 3, 4, 5
+						   };
+	LinkedList<int> list{initArray, 5};
+	LinkedList<int> result = list * 5;
 
+	EXPECT_EQ(list.size(), 5);
+	EXPECT_EQ(result.size(), 25);
+
+	for (size_t i = 0; i < 5; ++i) 
+		EXPECT_EQ(list[i], initArray[i]);
+
+	for (size_t i = 0; i < 25; ++i) 
+		EXPECT_EQ(result[i], resultArray[i]);
+	
+
+	result[3] = 9;
+
+	EXPECT_EQ(list[3], 4);
 }
 
 TEST(LinkedListTest, asArrayEmpty)
 {
-	// This is essentially undefined behavior - I should probably throw 
-	// an exception
+	LinkedList<int> list;
+
+	// This is an empty array, which is permissable because it was dynamically
+	// allocated.  However, dereferencing this array is undefined behavior.  As
+	// the First Ammendment to the C++ Standard states:
+	//     "The committee shall make no rule that prevents C++ programmers from 
+	//      shooting themselves in the foot."
+	int* myArray = list.asArray();
+
+	// We're simply asserting that there is a memory address.  Hooray!
+	assert(myArray != nullptr);
+
+	delete [] myArray;
 }
 
 TEST(LinkedListTest, asArrayOne)

@@ -142,14 +142,7 @@ public:
 	 * \details Adds two lists together and returns the result.
 	 */
     template <typename P>
-    friend LinkedList<P> operator+(LinkedList<P> lhs, LinkedList<P> const& rhs);
-
-    /**
-     * \brief Overloads the addition operator.
-     * \details Adds an array to the list and returns the result
-     */
-    template <typename P>
-    friend LinkedList<P> operator+(LinkedList<P> lhs, P* rhs);
+    friend LinkedList<P> operator+(LinkedList<P> lhs, LinkedList<P> rhs);
 
 	/**
 	 * \brief Overloads the multiplication operator.
