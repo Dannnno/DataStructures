@@ -49,7 +49,7 @@ OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
 OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
 tests: $(TEST_OBJ) $(OTHER_OBJ)
-	$(CXX) -o a_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
+	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
 
 obj/test_%.o: test_%.cpp %.hpp _%.hpp
     # The $@ variable binds to the target obj/%.o
