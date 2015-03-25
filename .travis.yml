@@ -29,8 +29,9 @@ script:
 after_success:
  - sudo apt-get install -y python-pip
  - sudo pip install -y gcovr
- - echo $PATH
- - python ~/bin/scripts/gcovr -r .
+ - ls /usr/bin/python -l
+ - ls /usr/bin/python/scripts -l
+ - python /usr/bin/python/scripts/gcovr -r .
 
 notifications:
   recipients:
