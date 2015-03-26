@@ -138,6 +138,16 @@ public:
 	void insert(std::size_t index, T value);
 
 	/**
+	 * \brief Determines the index of an element.
+	 */
+	std::size_t index_of(T const& value) const;
+
+	/**
+	 * \brief Determines whether or not the value is present.
+	 */
+	bool contains(T const& value) const;
+
+	/**
 	 * \brief Overloads the addition operator.
 	 * \details Adds two lists together and returns the result.
 	 */

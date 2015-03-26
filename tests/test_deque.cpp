@@ -694,3 +694,36 @@ TEST(DequeTest, asArrayMany)
 
 	delete [] myArray;
 }
+
+TEST(DequeTest, indexOfPresent)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list{initArray, 5};
+
+	EXPECT_EQ(3, list.index_of(4));
+}
+
+TEST(DequeTest, indexOfNotPresent)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list{initArray, 5};
+
+	EXPECT_THROW(list.index_of(6), IndexOutOfBoundsException);
+}
+
+TEST(DequeTest, containsPresent)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list{initArray, 5};
+
+	EXPECT_EQ(true, list.contains(4));
+}
+
+TEST(DequeTest, containsNotPresent)
+{
+	int initArray[5] = {1, 2, 3, 4, 5};
+	Deque<int> list{initArray, 5};
+
+	EXPECT_EQ(false, list.contains(6));
+}
+

@@ -32,32 +32,36 @@ ifneq ($(OS), Windows_NT)
 endif
 
 # Flags to ensure proper compilation
-CXXFLAGS := -g -Wall -Wextra -Werror -pedantic -std=gnu++11
-# Flags necessary to run gcov
-COVERAGE := -fprofile-arcs -ftest-coverage
+CXXFLAGS := -g -Wall -Wextra -Werror -pedantic -std=gnu++11 -O2
 # Libraries to link for gtest and coverage
-TEST_LINK += -lgtest -fprofile-arcs
+TEST_LINK += -lgtest
 
 # Allows me to minimize code repetition when compiling source files
-TO_TEST := linkedlist deque # mergesort
+TO_TEST := linkedlist deque nonhashmap # mergesort
 TESTS = $(foreach file, $(TO_TEST), tests/test_$(file).cpp)
 TEST_OBJ = $(patsubst %.cpp, obj/%.o, $(patsubst tests/%.cpp, %.cpp, $(TESTS)))
 
 # Other things that need to be compiled
-_OTHERS := exceptions runtests
+_OTHERS := runtests
 OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
 OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
-tests: $(TEST_OBJ) $(OTHER_OBJ)
+tests: exceptions $(TEST_OBJ) $(OTHER_OBJ)
 	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
+
+coverage: cover tests
+
+cover:
+    # Flags necessary to run gcov
+	COVERAGE += -fprofile-arcs -ftest-coverage
+	TEST_LINK += -fprofile-arcs
 
 obj/test_%.o: test_%.cpp %.hpp _%.hpp
     # The $@ variable binds to the target obj/%.o
     # The $< variable binds to the dependencies %.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 
 
-obj/exceptions.o: exceptions.cpp exceptions.hpp
-	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o obj/exceptions.o exceptions.cpp
+exceptions: exceptions.hpp _exceptions.hpp
 
 obj/runtests.o: runtests.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o obj/runtests.o runtests.cpp

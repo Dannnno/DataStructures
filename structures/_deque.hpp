@@ -248,6 +248,28 @@ void Deque<T>::insert(std::size_t n, T value)
 }
 
 template <typename T> inline
+bool Deque<T>::contains(T const& value) const
+{
+	for (T node : *this)
+		if (node == value)
+			return true;
+	return false;
+}
+
+template <typename T> inline
+std::size_t Deque<T>::index_of(T const& value) const
+{
+	std::size_t i = 0;
+	for (T node : *this) {
+		if (node == value)
+			return i;
+		++i;
+	}
+
+	throw IndexOutOfBoundsException(numElements_, "Deque");
+}
+
+template <typename T> inline
 Deque<T> operator+(Deque<T> lhs, Deque<T> rhs)
 {
 	lhs.numElements_ += rhs.numElements_;

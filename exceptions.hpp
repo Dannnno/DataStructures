@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <string>
 
+
 /**
  * \brief My own implementation of to_string.  Necessary because MinGW
  * 		  has some weird problems with it.
@@ -83,5 +84,7 @@ private:
 	KEY key_;
 	std::string mappingType_;
 };
+
+#include "_exceptions.hpp"
 
 #endif

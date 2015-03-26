@@ -234,6 +234,28 @@ void LinkedList<T>::insert(std::size_t n, T value)
 }
 
 template <typename T> inline
+bool LinkedList<T>::contains(T const& value) const
+{
+	for (T node : *this)
+		if (node == value)
+			return true;
+	return false;
+}
+
+template <typename T> inline
+std::size_t LinkedList<T>::index_of(T const& value) const
+{
+	std::size_t i = 0;
+	for (T node : *this) {
+		if (node == value)
+			return i;
+		++i;
+	}
+
+	throw IndexOutOfBoundsException(numElements_, "LinkedList");
+}
+
+template <typename T> inline
 LinkedList<T> operator+(LinkedList<T> lhs, LinkedList<T> rhs)
 {
 	lhs.numElements_ += rhs.numElements_;

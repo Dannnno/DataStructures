@@ -15,20 +15,6 @@
 #include "../exceptions.hpp"
 
 
-/**
- * \brief Abstract base class for list types.
- */
-template <typename T>
-class List;
-
-
-/**
- * \brief Overloading the << operator to allow clean string 
- *        representations of the list.
- */
-template <typename T>
-std::ostream& operator<<(std::ostream& str, const List<T>& list);
-
 template <typename T>
 class List
 {
@@ -91,6 +77,16 @@ public:
 	 * \brief inserts an item at the indicated index.
 	 */
 	virtual void insert(std::size_t index, T value) = 0;
+
+	/**
+	 * \brief Determines the index of an element.
+	 */
+	virtual std::size_t index_of(T const& value) const = 0;
+
+	/**
+	 * \brief Determines whether or not the value is present.
+	 */
+	virtual bool contains(T const& value) const = 0;
 
 	/**
 	 * \brief Overloads the mutable subscript operator.
