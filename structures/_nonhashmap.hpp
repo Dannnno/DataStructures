@@ -27,9 +27,6 @@ NonHashMap<K, V>::NonHashMap(NonHashMap<K, V> const& orig)
 template <typename K, typename V> inline
 NonHashMap<K, V>::NonHashMap(NonHashMap<K, V>&& other) 
 {
-	#include <iostream>
-
-	std::cout << "Move constructor" << std::endl;
 	swap(*this, other);
 }
 

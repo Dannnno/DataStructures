@@ -6,11 +6,8 @@
 #ifndef _DEQUE_HPP
 #define _DEQUE_HPP 1
 
-#include <cstddef>
 #include <string>
 #include <iostream>
-#include <iterator>
-#include <utility>
 
 #include "list.hpp"
 #include "../exceptions.hpp"
@@ -348,49 +345,49 @@ bool Deque<T>::operator!=(const Deque<T>& rhs) const
 template <typename T> inline
 typename Deque<T>::iterator Deque<T>::begin() 
 {
-	return Iterator{head_};	
+	return Iterator<false>{head_};	
 }
 
 template <typename T> inline
 typename Deque<T>::iterator Deque<T>::end()
 {
-	return Iterator{nullptr};
+	return Iterator<false>{nullptr};
 }
 
 template <typename T> inline
 typename Deque<T>::const_iterator Deque<T>::begin() const 
 {
-	return ConstIterator{head_};
+	return Iterator<true>{head_};
 }
 
 template <typename T> inline
 typename Deque<T>::const_iterator Deque<T>::end() const
 {
-	return ConstIterator{nullptr};
+	return Iterator<true>{nullptr};
 }
 
 template <typename T> inline
 typename Deque<T>::reverse_iterator Deque<T>::rbegin() 
 {
-	return ReverseIterator{tail_};	
+	return ReverseIterator<false>{tail_};	
 }
 
 template <typename T> inline
 typename Deque<T>::reverse_iterator Deque<T>::rend()
 {
-	return ReverseIterator{nullptr};
+	return ReverseIterator<false>{nullptr};
 }
 
 template <typename T> inline
 typename Deque<T>::const_reverse_iterator Deque<T>::rbegin() const 
 {
-	return ConstReverseIterator{tail_};
+	return ReverseIterator<true>{tail_};
 }
 
 template <typename T> inline
 typename Deque<T>::const_reverse_iterator Deque<T>::rend() const
 {
-	return ConstReverseIterator{nullptr};
+	return ReverseIterator<true>{nullptr};
 }
 
 template <typename T> inline
@@ -461,173 +458,6 @@ T* Deque<T>::toArray() const
 	return newArray;
 }
 
-template <typename T> inline
-typename Deque<T>::iterator&
-Deque<T>::iterator::operator++()
-{
-	current_ = current_->next_;
-	return *this;
-}
-
-template <typename T> inline
-typename Deque<T>::const_iterator& 
-Deque<T>::const_iterator::operator++()
-{
-	current_ = current_->next_;
-	return *this;
-}
-
-template <typename T> inline
-typename Deque<T>::reverse_iterator&
-Deque<T>::reverse_iterator::operator++()
-{
-	current_ = current_->previous_;
-	return *this;
-}
-
-template <typename T> inline
-typename Deque<T>::const_reverse_iterator& 
-Deque<T>::const_reverse_iterator::operator++()
-{
-	current_ = current_->previous_;
-	return *this;
-}
-
-template <typename T> inline
-typename Deque<T>::iterator
-Deque<T>::iterator::operator++(int) const
-{
-    auto old = current_;
-    current_ = current_->next_;
-    return Iterator{old};
-}
-
-template <typename T> inline
-typename Deque<T>::const_iterator
-Deque<T>::const_iterator::operator++(int) const
-{
-    auto old = current_;
-    current_ = current_->next_;
-    return Iterator{old};
-}
-
-template <typename T> inline
-typename Deque<T>::reverse_iterator
-Deque<T>::reverse_iterator::operator++(int) const
-{
-    auto old = current_;
-    current_ = current_->previous_;
-    return Iterator{old};
-}
-
-template <typename T> inline
-typename Deque<T>::const_reverse_iterator
-Deque<T>::const_reverse_iterator::operator++(int) const
-{
-    auto old = current_;
-    current_ = current_->previous_;
-    return Iterator{old};
-}
-
-template <typename T> inline
-const T& Deque<T>::iterator::operator*() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T& Deque<T>::const_iterator::operator*() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T& Deque<T>::reverse_iterator::operator*() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T& Deque<T>::const_reverse_iterator::operator*() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T* Deque<T>::iterator::operator->() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T* Deque<T>::const_iterator::operator->() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T* Deque<T>::reverse_iterator::operator->() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-const T* Deque<T>::const_reverse_iterator::operator->() const
-{
-	return current_->value_;
-}
-
-template <typename T> inline
-bool Deque<T>::iterator::operator==(const iterator& rhs) const
-{
-	return current_ == rhs.current_;
-} 
-
-template <typename T> inline
-bool Deque<T>::const_iterator::operator==(const const_iterator& rhs) const
-{
-	return current_ == rhs.current_;
-} 
-
-template <typename T> inline
-bool Deque<T>::reverse_iterator::operator==(const reverse_iterator& rhs) const
-{
-	return current_ == rhs.current_;
-} 
-
-template <typename T> inline
-bool Deque<T>::const_reverse_iterator::operator==(
-	const const_reverse_iterator& rhs) const
-{
-	return current_ == rhs.current_;
-} 
-
-template <typename T> inline
-bool Deque<T>::iterator::operator!=(const iterator& rhs) const
-{
-	return !(*this == rhs);
-} 
-
-template <typename T> inline
-bool Deque<T>::const_iterator::operator!=(
-	const const_iterator& rhs) const
-{
-	return !(*this == rhs);
-} 
-
-template <typename T> inline
-bool Deque<T>::reverse_iterator::operator!=(const reverse_iterator& rhs) const
-{
-	return !(*this == rhs);
-} 
-
-template <typename T> inline
-bool Deque<T>::const_reverse_iterator::operator!=(
-	const const_reverse_iterator& rhs) const
-{
-	return !(*this == rhs);
-} 
-
 template <typename T> inline 
 std::ostream& operator<<(std::ostream& str, const Deque<T>& list)
 {
@@ -660,5 +490,7 @@ typename Deque<T>::ListNode* Deque<T>::getListNode(
 		return it.current_;
 	}
 }
+
+#include "_deque_iterator.hpp"
 
 #endif

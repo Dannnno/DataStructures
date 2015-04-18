@@ -10,6 +10,8 @@
 
 #include <cstddef>
 #include <iterator>
+#include <utility>
+#include <type_traits>
 
 #include "list.hpp"
 #include "../exceptions.hpp"
@@ -23,24 +25,16 @@ class Deque : public List<T>
 {
 private:
 	/**
-	 * \brief Iterator for a deque.
+	 * \brief Forward iterator for a deque.
 	 */
+	template <bool const_it>
 	class Iterator;
-
-	/**
-	 * \brief Constant iterator for a deque.
-	 */
-	class ConstIterator;
 
 	/**
 	 * \brief Reverse iterator for a deque.
 	 */
+	template <bool const_it>
 	class ReverseIterator;
-
-	/**
-	 * \brief Constant reverse iterator for a deque.
-	 */
-	class ConstReverseIterator;
 
 	/**
 	 * \brief Node of a deque
@@ -211,10 +205,10 @@ public:
 	friend std::ostream& operator<<(
 		std::ostream& str, const Deque<P>& list);
 
-  	typedef Iterator iterator;
-  	typedef ConstIterator const_iterator;
-  	typedef ReverseIterator reverse_iterator;
-  	typedef ConstReverseIterator const_reverse_iterator;
+  	typedef Iterator<false> iterator;
+  	typedef Iterator<true> const_iterator;
+  	typedef ReverseIterator<false> reverse_iterator;
+  	typedef ReverseIterator<true> const_reverse_iterator;
 
     /**
      * \brief Start of the deque.
@@ -284,38 +278,51 @@ public:
     T* toArray() const;
 
 private:
+	template <bool const_it>
 	class Iterator : public std::iterator<std::forward_iterator_tag, T>
 	{
 	public:
+		using value_type = T;
+        using reference = typename std::conditional<const_it, 
+                                                    const value_type&, 
+                                                    value_type&>::type;
+        using pointer = typename std::conditional<const_it, 
+                                                  const value_type*, 
+                                                  value_type*>::type;
+
+        using difference_type   = ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
+        using const_reference   = const value_type&;
+
 	    /**
 		 * \brief Prefix increment operator overloading.
 		 */
-		Iterator& operator++();
+		Iterator<const_it>& operator++();
 
 		/**
 		 * \brief Postfix increment operator overloading.
 		 */
-		Iterator operator++(int) const;
+		Iterator<const_it> operator++(int) const;
 
 		/**
 		 * \brief Dereferencing operator overloading.
 		 */
-		const T& operator*() const;
+		const reference operator*() const;
 
 		/**
 		 * \brief Member access operator overriding.
 		 */
-		const T* operator->() const;
+		const pointer operator->() const;
 
 		/**
 		 * \brief Equality operator overriding.
 		 */
-		bool operator==(const Iterator& rhs) const;
+		bool operator==(const Iterator<const_it>& rhs) const;
 
 		/**
 		 * \brief Inequality operator overriding.
 		 */
-		bool operator!=(const Iterator& rhs) const;
+		bool operator!=(const Iterator<const_it>& rhs) const;
 
 	private:
 		friend class Deque;
@@ -326,84 +333,47 @@ private:
 	    /**
 	     * \brief All iterators should have a current node.
 	     */
-	    Iterator(ListNode* node) : current_{node}
-	    {
-	    }
+	    Iterator(ListNode* node);
 		
 		ListNode* current_;
 	};
 
-	class ConstIterator : public std::iterator<std::forward_iterator_tag, T>
-	{
-	public:
-	    /**
-		 * \brief Prefix increment operator overloading.
-		 */
-		ConstIterator& operator++();
-
-		/**
-		 * \brief Postfix increment operator overloading.
-		 */
-		ConstIterator operator++(int) const;
-
-		/**
-		 * \brief Dereferencing operator overloading.
-		 */
-		const T& operator*() const;
-
-		/**
-		 * \brief Member access operator overriding.
-		 */
-		const T* operator->() const;
-
-		/**
-		 * \brief Equality operator overriding.
-		 */
-		bool operator==(const ConstIterator& rhs) const;
-
-		/**
-		 * \brief Inequality operator overriding.
-		 */
-		bool operator!=(const ConstIterator& rhs) const;
-
-	private:
-		friend class Deque;
-		/**
-	     * \brief The default constructor.
-	     */
-	    ConstIterator() = delete;
-	    /**
-	     * \brief All iterators should have a current node.
-	     */
-	    ConstIterator(ListNode* node) : current_{node}
-	    {
-	    }
-		
-		ListNode* current_;
-	};
-
+	template <bool const_it>
 	class ReverseIterator : public std::iterator<std::forward_iterator_tag, T>
 	{
 	public:
+
+		using value_type = T;
+        using reference = typename std::conditional<const_it, 
+                                                    const value_type&, 
+                                                    value_type&>::type;
+        using pointer = typename std::conditional<const_it, 
+                                                  const value_type*, 
+                                                  value_type*>::type;
+
+        using difference_type   = ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
+        using const_reference   = const value_type&;
+
 	    /**
 		 * \brief Prefix increment operator overloading.
 		 */
-		ReverseIterator& operator++();
+		ReverseIterator<const_it>& operator++();
 
 		/**
 		 * \brief Postfix increment operator overloading.
 		 */
-		ReverseIterator operator++(int) const;
+		ReverseIterator<const_it> operator++(int) const;
 
 		/**
 		 * \brief Dereferencing operator overloading.
 		 */
-		const T& operator*() const;
+		const reference operator*() const;
 
 		/**
 		 * \brief Member access operator overriding.
 		 */
-		const T* operator->() const;
+		const pointer operator->() const;
 
 		/**
 		 * \brief Equality operator overriding.
@@ -424,71 +394,9 @@ private:
 	    /**
 	     * \brief All iterators should have a current node.
 	     */
-	    ReverseIterator(ListNode* node) : current_{node}
-	    {
-	    }
+	    ReverseIterator(ListNode* node);
 		
 		ListNode* current_;
-	};
-
-	class ConstReverseIterator : 
-		public std::iterator<std::forward_iterator_tag, T>
-	{
-	public:
-	    /**
-		 * \brief Prefix increment operator overloading.
-		 */
-		ConstReverseIterator& operator++();
-
-		/**
-		 * \brief Postfix increment operator overloading.
-		 */
-		ConstReverseIterator operator++(int) const;
-
-		/**
-		 * \brief Dereferencing operator overloading.
-		 */
-		const T& operator*() const;
-
-		/**
-		 * \brief Member access operator overriding.
-		 */
-		const T* operator->() const;
-
-		/**
-		 * \brief Equality operator overriding.
-		 */
-		bool operator==(const ConstReverseIterator& rhs) const;
-
-		/**
-		 * \brief Inequality operator overriding.
-		 */
-		bool operator!=(const ConstReverseIterator& rhs) const;
-
-	private:
-		friend class Deque;
-		/**
-	     * \brief The default constructor.
-	     */
-	    ConstReverseIterator() = delete;
-	    /**
-	     * \brief All iterators should have a current node.
-	     */
-	    ConstReverseIterator(ListNode* node) : current_{node}
-	    {
-	    }
-		
-		ListNode* current_;
-	};
-
-	/**
-	 * \brief Node of a linkedlist
-	 */
-	struct ListNode
-	{
-		T value_;
-		ListNode* next_;
-		ListNode* previous_;
 	};
 
 	/**

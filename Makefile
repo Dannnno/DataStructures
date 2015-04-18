@@ -47,7 +47,7 @@ OTHERS := $(foreach file, $(_OTHERS), $(file).cpp)
 OTHER_OBJ := $(patsubst %.cpp, obj/%.o, $(OTHERS))
 
 tests: exceptions $(TEST_OBJ) $(OTHER_OBJ)
-	$(CXX) -o all_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
+	$(CXX) -o a_tests $(TEST_OBJ) $(OTHER_OBJ) $(TEST_LINK)
 
 coverage: cover tests
 
@@ -56,7 +56,7 @@ cover:
 	COVERAGE += -fprofile-arcs -ftest-coverage
 	TEST_LINK += -fprofile-arcs
 
-obj/test_%.o: test_%.cpp %.hpp _%.hpp
+obj/test_%.o: test_%.cpp %.hpp _%.hpp _%_iterator.hpp
     # The $@ variable binds to the target obj/%.o
     # The $< variable binds to the dependencies %.cpp
 	$(CXX) $(CXXFLAGS) $(COVERAGE) -c -o $@ $< 

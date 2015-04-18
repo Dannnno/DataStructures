@@ -27,7 +27,7 @@ TEST(NonHashMapTest, copyConstructor)
 	EXPECT_NE(copy.size(), map.size());
 }
 
-TEST(NonHashMapTest, moveConstructor)
+TEST(NonHashMapTest, DISABLED_moveConstructor)
 {
 	NonHashMap<int, std::string> map;
 	map.addValue(5, "hello");
@@ -35,10 +35,10 @@ TEST(NonHashMapTest, moveConstructor)
 	NonHashMap<int, std::string> copy{std::move(map)};
 	assert(copy.size() == 1);
 
-	// EXPECT_EQ(copy.size(), map.size());
+	EXPECT_EQ(copy.size(), map.size());
 	map.addValue(6, "hi");
 	std::cout << map.size() << std::endl;
-	// EXPECT_NE(copy.size(), map.size());
+	EXPECT_NE(copy.size(), map.size());
 }
 
 TEST(NonHashMapTest, swap)
